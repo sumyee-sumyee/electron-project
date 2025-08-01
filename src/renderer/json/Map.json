@@ -1,0 +1,67 @@
+{
+	"Currenttime": "当前时间",
+	
+	"SetIndoorMode": "内机设置模式",
+	"SetTemp": "设定温度",
+	"InRingTemp": "内环温度",
+	"InTubeTemp": "内管温度",
+	"IndoorNG": "内机故障保护",
+	"ActIndoorSpeeq": "内机实际转速",
+	"SetIndoorSpeed": "内机设定风速",
+	"EEPROMCheck": "EE数据校验和",
+	
+	"OutdoorMode": "外机运行模式",
+	"RunTime": "运行时间",
+	"OutdoorNG": "外机故障保护",
+	"ThreeMinsCount": "3分钟停机倒时",
+	
+	"SetFreq": "压机设定频率",
+	"ActualFreq": "压机实际频率",
+	"OutTargetSpeed": "外风机目标转速",
+	"OutActualSpeed": "外风机实际转速",
+	
+	"OutRingTemp": "外环温度",
+	"OutEnviromentTemp": "外环温保护领域",
+	"ACVoltage": "AC电压",
+	"DCVoltage": "母线电压",
+	
+	"OutTubeTemp": "外管温度",
+	"OuterProt": "外盘保护等级",
+	"ACCurrent": "AC电流",
+	"ACCrtProt": "AC电流保护等级",
+	
+	"ExhaustTemp": "排气温度",
+	"ExhaustProt": "排气保护等级",
+	"CompressorCurrent": "压机电流",
+	"PhaseCrtProt": "相电流保护等级",
+	
+	"IPMTemp": "IPM温度",
+	"InnerProt": "内盘保护等级",
+	"FourwayValve": "四通阀状态",
+	"PFC": "PFC开关状态",
+	
+	"DriveNG1": "驱动故障1",
+	"DriveNG2": "驱动故障2",
+	"DriveNG3": "驱动故障3",
+	"DriveNG4": "驱动故障4",
+
+	"AverageTemp": "平均目标排气",
+	"EEVTargetStep": "阀目标开度",
+	"EEVActualStep": "阀现在开度",
+	"ValveCompensation": "阀开度补偿值",
+	
+	"ValveInitStep": "初期阀值开度",
+	"FrostTemp": "结霜点温度",
+	"FrostStage": "除霜阶段",
+	"Deforst": "除霜状态",
+	
+	"Heatbelt": "加热带状态",
+	"TestMode": "测试模式",
+	"TorqueCompensation": "力矩补偿状态",
+	"RelativeCtl": "相对控制领域",
+	
+	"DesiccantTemp": "除湿温度",
+	"FreqPoint": "频率测试点",
+	"FreqOffset": "频率偏移量",
+	"Version": "程序版本"
+}

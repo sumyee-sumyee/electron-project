@@ -1,0 +1,71 @@
+{
+	"Currenttime": "Current time",
+	
+	"SetMode": "Set Mode",
+	"SetTemp": "Set Temp",
+	"RingTemp": "Inner Ring Temp",
+	"TubeTemp": "Inner Tube Temp",
+	"SetSpeed": "Set Speed",
+	"ActSpeed": "Actual Speed",
+
+
+	"ForceEn": "ForceEn",
+	"Clean": "Clean",
+	"Eco": "Eco",
+	"Turbo": "Tuber",
+	"IndoorNG": "IDU Error",
+
+	"OutdoorMode": "Run Mode",
+	"RunTime": "RunTime",
+	"SetFreq": "Set Freq",
+	"ActualFreq": "Actual Freq",
+	"OutTargetSpeed": "Target Speed",
+	"OutActualSpeed": "Actual Speed",
+
+	"OutRingTemp": "Out Ring Temp",
+	"OutEnviromentTemp": "Out Enviroment Temp Lim",
+	"ACVoltage": "AC Voltage",
+	"DCVoltage": "DC Voltage",
+	"OutdoorNG": "ODU Error",
+
+	"OutTubeTemp": "Out Tube Temp",
+	"OuterProt": "Outer Disk Protection",
+	"ACCurrent": "AC Current",
+	"ACCrtProt": "AC Current Protection",
+	"ThreeMinsCount": "3mins Stop Count",
+	"InnerProt": "Inner Disk Protection",
+
+	"ExhaustTemp": "Exhaust Temp",
+	"ExhaustProt": "Exhaust Protection",
+	"CompressorCurrent": "Compressor Current",
+	"PhaseCrtProt": "Phase Current Protection",
+	"FourwayValve": "Fourway Valve Status",
+	"RelativeCtl": "Relative Control Field",
+	
+	"IPMTemp": "IPM Temp",
+	"BackTemp": "Back Temp",
+	"PFC": "PFC Statu",
+	"TorqueCompensation": "Torque Compensation",
+	"TwowayValve": "Twoway Valve Status",
+	"TestMode": "Test Mode",
+
+	"DesiccantTemp": "Desiccant Set Temp",
+	"FrostTemp": "Frost Temp",
+	"EEVTargetStep": "EEV target steps",
+	"EEVActualStep": "EEV actual steps",
+	"Heatbelt": "Heatbelt Status",
+	"FreqPoint": "Test Frequency Point",
+
+	"Deforst": "Deforst Status",
+	"FrostStage": "Defrosting Stage",
+	"ValveInitStep": "Init Valve OpenDefree",
+	"ValveCompensation": "Valve Open Compensation",
+	"AverageTemp": "Average target exhaust",
+	"FreqOffset": "Frequency Offset",
+
+	"Version": "Version",
+	"EEPROMCheck": "EEPROM Check",
+	"CRC32": "CRC32"
+
+
+}

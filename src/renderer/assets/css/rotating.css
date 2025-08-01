@@ -1,0 +1,194 @@
+/* 仪表盘区域 */
+
+#jhc-gauge-area {
+  width: 100%;
+  height: 100vh;
+  background: #050842;
+  position: relative;
+}
+
+/*整个仪表盘的盒子*/
+
+#cssGauge {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 50%;
+  margin-top: 3%
+}
+
+/*装外层装饰刻度的盒子*/
+
+.cssDotWrap {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  bottom: 1%;
+  left: 50%;
+}
+
+/*装内层指示刻度的盒子*/
+
+.cssDotWrap2 {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 13.6%;
+  left: 50.2%;
+}
+
+/* 仪表盘中圆形的环 */
+
+.jhc-gauge-circle {
+  width: 88%;
+  height: 88%;
+  border: 2px solid #509fef;
+  border-radius: 50%;
+  position: absolute;
+  top: 5%;
+  left: 6%;
+}
+
+/* 仪表盘的圆心 */
+
+.jhc-gauge-center {
+  width: 8%;
+  height: 8%;
+  border-radius: 50%;
+  position: absolute;
+  background-color: #509fef;
+  z-index: 20;
+  left: 46%;
+  top: 46%;
+  box-shadow: 0px 0px 10px 1px #000;
+}
+
+/* 仪表盘的背景图片 */
+
+.jhc-gauge-back {
+  width: 66%;
+  height: 66%;
+  border-radius: 50%;
+  position: absolute;
+  top: 16.9%;
+  left: 16.8%;
+  background: url(https://jhcan333.github.io/can-Share/image/clock/gaugeBack.png) no-repeat;
+  background-size: 95% 95%;
+  background-position: center center;
+}
+
+/* 仪表盘的刻度 */
+
+.jhc-gauge-scale {
+  color: #fff;
+  z-index: 2;
+  text-align: center;
+  width: 10%;
+  height: 43%;
+  position: absolute;
+  left: 45%;
+  bottom: 50.9%;
+  transform-origin: center bottom;
+}
+
+/* 仪表盘的指针 */
+
+#jhc-gauge-needle {
+  z-index: 5;
+  width: 8%;
+  height: 26%;
+  position: absolute;
+  left: 46%;
+  bottom: 50%;
+  transition: all 0.5s ease-in-out;
+  transform-origin: center bottom;
+  background: url(https://jhcan333.github.io/can-Share/image/clock/hourPoint.png) no-repeat;
+  background-size: 100% 100%;
+}
+
+/* 仪表盘的底部 */
+
+.jhc-gauge-bottom {
+  text-align: center;
+  color: #fff;
+  position: absolute;
+  bottom: 3px;
+  width: 100%;
+  height: 15%;
+}
+
+.jhc-gauge-bottom .gauge-text {
+  margin-bottom: 10px;
+}
+
+.operation {
+  display: flex;
+  height: 50%;
+}
+
+.operation div {
+  margin: 0 10px;
+  flex: 1;
+}
+
+.operation .show-value input {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  color: #ffffff;
+  font-size: 16px;
+  text-align: center;
+  background-color: #0F0F33;
+  border: rgba(34, 43, 95, .79) solid 1px;
+  transition: all 0.4s;
+}
+
+.operation .btn button {
+  display: block;
+  font-size: 24px;
+  height: 100%;
+  width: 100%;
+  border: none;
+  background-color: rgba(200, 200, 200, .3);
+  color: #ffffff;
+  transition: all 0.5s;
+}
+
+.operation .btn button:hover {
+  background-color: rgba(200, 200, 200, .8);
+  color: #2f2f2f;
+}
+
+.operation .btn button:focus {
+  outline: 0;
+}
+
+.operation .show-value input:focus {
+  outline: 0;
+}
+
+.operation .show-value input:hover {
+  border-color: #6974b3;
+}
+
+.right-aside {
+  padding-top: 20px
+}
+
+.right_aside .el-row {
+  margin-top: 20px
+}
+
+.in-rotate .right_aside .el-button--primary {
+  width: 98%;
+}
+.in-rotate .right_aside .el-select{
+  width: 94% !important;
+}
+.in-rotate .el-card{
+  background-color:#909399;
+  color: #ffffff;
+  font-size: 24px;
+}

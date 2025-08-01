@@ -1,0 +1,93 @@
+/* 全局样式， 去掉默认的内外边距，并设置传统盒模型 */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+li {
+    list-style: none;
+}
+
+.el-form-item {
+    margin-bottom: 0px;
+}
+
+.progress-box .el-progress-bar__outer {
+    height: 27px !important;
+}
+
+/*更改曲线图下表格的行高*/
+.show-data .el-form-item--mini .el-form-item__content {
+    line-height: 12px;
+}
+
+/*更改表格滑过行的背景颜色*/
+
+.show-data .el-table--enable-row-hover .el-table__body tr:hover > td {
+    background-color: rgba(0, 0, 0, .2) !important;
+    color: #ffffff;
+}
+
+/*取消设置表格可修改表单的下边距*/
+.show-data .el-form-item--mini.el-form-item, .show-data .el-form-item--small.el-form-item {
+    margin-bottom: unset;
+}
+
+/*表格的数值居中*/
+.show-data .el-table td, .show-data .el-table th {
+    text-align: center;
+    border-bottom: 2px solid #8392A5;
+    border-right: 2px solid #8392A5;
+}
+
+/*表格每一项的行高*/
+.show-data .el-table .cell {
+    line-height: 28px;
+}
+
+/*更改表格外边框线*/
+.show-data .el-table th.is-leaf {
+    border-bottom: 2px solid #8392A5;
+}
+
+.show-data .el-table--border, .el-table--group {
+    border-top: 2px solid #8392A5;
+    border-left: 2px solid #8392A5;
+}
+
+.show-data .el-table--border::after, .show-data .el-table--group::after, .show-data .el-table::before {
+    background-color: unset;
+}
+
+body .el-table th.gutter{
+    display: table-cell!important;
+}
+ 
+body .el-table colgroup.gutter{
+    display: table-cell!important;
+}
+
+/*更高表头高度*/
+.show-data .el-table--mini td, .el-table--mini th {
+    padding: 3px 0;
+}
+
+.el-tabs--border-card>.el-tabs__content {
+    padding: 10px;
+}
+
+/*数据走马灯单选框*/
+.out-table .el-radio-group{
+    display:block;
+}
+
+.out-table .el-radio__label {
+    font-size: 12px;
+} 
+.out-table .el-carousel__arrow--left{
+    left: 12px;
+}
+.out-table .el-carousel__arrow--right{
+    right: 12px;
+}
