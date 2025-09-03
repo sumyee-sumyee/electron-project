@@ -20,7 +20,9 @@ import {
   APP_EVENT_OPEN_XLSX,
   APP_EVENT_WRITE_XLSX,
   APP_EVENT_STOP_XLSX, 
+  APP_EVENT_COM_LIST,
 } from './renderer/js/constants/ElectronConstants'
+import {APP_EVENT_STORE_FILE_DIALOG} from './renderer/js/constants/IndoorConstants'
 // import SerialPort from 'serialport'
 const SP = require('serialport')
 const SerialPort = SP.SerialPort
@@ -79,7 +81,7 @@ function ModuleBusUartRead (data) {
 
 function SendUartDataHandler () {
 
-  let cmdDataBuffer = [0x01, 0x03, 0x00, 0x14, 0x00, 0x7D];
+  let cmdDataBuffer = [0x01, 0x04, 0x10, 0x03, 0x00, 0x5D];
   let crc16 = crc.crc16(cmdDataBuffer, 0xFFFF);
   let cmdUartSendBuffer = cmdDataBuffer.concat((crc16 & 0xff)).concat(((crc16 & 0xff00) >> 8));
 
@@ -141,7 +143,7 @@ function StartConnect (name) {
 
   let BaudRate, DataBits, StopBits;
   if (store.state.SystemData.MonitorMode === 'outdoor') {
-    BaudRate = 9600;
+    BaudRate = 2000000;
     DataBits = 8;
     StopBits = 1;
   } else {
@@ -173,42 +175,64 @@ function StartConnect (name) {
   })
 }
 
-
+let refreshLock = false;
 function UartRefreshList () {
-  // console.log('Hit UartRefreshList')
-  let comList = []
-  // 新用法
-  SerialPort.list().then(ports=>{
-    // console.log(ports, 'ports')
+  if (refreshLock) return; // 防止重复调用
+  refreshLock = true;
+  let comList = [];
+  SerialPort.list().then(ports => {
     ports.forEach(element => {
       comList.push({
         value: element.path,
         label: element.path
-      })
-    })  
-    console.log(comList, 'comList')
-    store.dispatch('SetComList', comList)
-  }).catch(err=>{
-    console.log('Error ports', ports)
-  })
-
-  // 旧用法
-  // SerialPort.list((err, ports) => {
-  //   let comList = []
-  //   if (err) {
-  //     console.log('Error ports', ports)
-  //   } else {
-  //     console.log('ports', ports)
-  //     ports.forEach(element => {
-  //       comList.push({
-  //         value: element.comName,
-  //         label: element.comName
-  //       })
-  //     })  
-  //     store.dispatch('SetComList', comList)
-  //   }
-  // })
+      });
+    });
+    console.log(comList, 'comList');
+    store.dispatch('SetComList', comList);
+    if (webContents) {
+      webContents.send('APP_EVENT_COM_LIST', comList);
+    }
+    refreshLock = false;
+  }).catch(err => {
+    console.log('Error ports', err);
+    refreshLock = false;
+  });
 }
+// function UartRefreshList () {
+//   // console.log('Hit UartRefreshList')
+//   let comList = []
+//   // 新用法
+//   SerialPort.list().then(ports=>{
+//     // console.log(ports, 'ports')
+//     ports.forEach(element => {
+//       comList.push({
+//         value: element.path,
+//         label: element.path
+//       })
+//     })  
+//     console.log(comList, 'comList')
+//     store.dispatch('SetComList', comList)
+//   }).catch(err=>{
+//     console.log('Error ports', ports)
+//   })
+
+//   // 旧用法
+//   // SerialPort.list((err, ports) => {
+//   //   let comList = []
+//   //   if (err) {
+//   //     console.log('Error ports', ports)
+//   //   } else {
+//   //     console.log('ports', ports)
+//   //     ports.forEach(element => {
+//   //       comList.push({
+//   //         value: element.comName,
+//   //         label: element.comName
+//   //       })
+//   //     })  
+//   //     store.dispatch('SetComList', comList)
+//   //   }
+//   // })
+// }
 
 
 
@@ -231,52 +255,73 @@ function UserSengMsgToAir () {
 
 let webContents
 export default function setIPCChannels (mainWindow) {
-  store.dispatch('CleanFilelist') 
-  UartRefreshList()
-  
-  InParam.Instance = new SystemServe.IPCSystemWin(mainWindow);
-  webContents = mainWindow.webContents
-
-  SendMsgCtrl.Msg = null
-  SendMsgCtrl.IdleMsg = null
-  StopConnect()
-
-  //串口列表
-  ipcMain.on(IPC_CHANNEL_REFRESH_COM_LIST, (event, arg) => {
+    store.dispatch('CleanFilelist') 
     UartRefreshList()
-  })
+    
+    InParam.Instance = new SystemServe.IPCSystemWin(mainWindow);
+    webContents = mainWindow.webContents
 
-  //停止串口
-  ipcMain.on(IPC_CHANNEL_STOP_DOWNLOAD, (event, arg) => {
+    SendMsgCtrl.Msg = null
+    SendMsgCtrl.IdleMsg = null
     StopConnect()
-  })
+
+    //串口列表
+    ipcMain.on(IPC_CHANNEL_REFRESH_COM_LIST, (event, arg) => {
+        UartRefreshList()
+    })
+
+    //停止串口
+    ipcMain.on(IPC_CHANNEL_STOP_DOWNLOAD, (event, arg) => {
+        StopConnect()
+    })
 
 
   //保存文件
-  ipcMain.on(IPC_CHANNEL_STORE_FILE_DIALOG, (event) => {
-
-    let TimeData = new Date().toLocaleString().replace(/ /g, '')
-    TimeData = TimeData.replace(/\//g, '-')
-    var xlsxTital = TimeData.replace(/\:/g, '-') + '--' + store.state.SystemData.comValue
-    dialog.showSaveDialog({
-      defaultPath: './' + xlsxTital +'--Data.csv',
-      title: '数据另存为',
-      filters: [
-        { name: 'CSV', extensions: ['csv'] }
-      ]
-    }, files => {
-      if (files) {
-        console.log(files)
-        if (store.state.SystemData.MonitorMode=== 'outdoor') {
-          store.dispatch('SetOutCsvFilePath', files)
-        } else {
-          store.dispatch('SetOutCsvFilePath', null)
-          store.dispatch('SetCsvFilePath', null)
-        }
+//   ipcMain.on(IPC_CHANNEL_STORE_FILE_DIALOG, (event) => {
+//     let TimeData = new Date().toLocaleString().replace(/ /g, '')
+//     TimeData = TimeData.replace(/\//g, '-')
+//     var xlsxTital = TimeData.replace(/\:/g, '-') + '--' + store.state.SystemData.comValue
+//     dialog.showSaveDialog({
+//       defaultPath: './' + xlsxTital +'--Data.csv',
+//       title: '数据另存为',
+//       filters: [
+//         { name: 'CSV', extensions: ['csv'] }
+//       ]
+//     }, files => {
+//       if (files) {
+//         console.log(files)
+//         if (store.state.SystemData.MonitorMode=== 'outdoor') {
+//             console.log("Save File Test");
+//           store.dispatch('SetOutCsvFilePath', files)
+//         } else {
+//           store.dispatch('SetOutCsvFilePath', null)
+//           store.dispatch('SetCsvFilePath', null)
+//         }
         
-      }
-    }) 
-  })
+//       }
+//     }) 
+//   })
+    ipcMain.on(IPC_CHANNEL_STORE_FILE_DIALOG, (event) => {
+        let TimeData = new Date().toLocaleString().replace(/ /g, '')
+        TimeData = TimeData.replace(/\//g, '-')
+        var xlsxTital = TimeData.replace(/\:/g, '-') + '--' + store.state.SystemData.comValue
+        dialog.showSaveDialog({
+            defaultPath: './' + xlsxTital + '--Data.csv',
+            title: '数据另存为',
+            filters: [
+                { name: 'CSV', extensions: ['csv'] }
+            ]
+        }).then(result => {
+            if (!result.canceled && result.filePath) {
+                console.log(result.filePath)
+                // 直接通过 Vuex 更新文件名，前端自动响应
+                //store.dispatch('SetOutCsvFilePath', result.filePath)
+                mainWindow.webContents.send('APP_EVENT_STORE_FILE_DIALOG', result.filePath)
+            }
+        }).catch(err => {
+            console.log('SaveDialog Error:', err)
+        })
+    })
 
   //初始化表格
   ipcMain.on(APP_EVENT_INIT_XLSX, (event, arg) => {
@@ -286,7 +331,7 @@ export default function setIPCChannels (mainWindow) {
 
 
   ipcMain.on(APP_EVENT_WRITE_XLSX, (event, arg) => {
-      // writeXls(Data, sheet, xlsxFile, 0);
+      writeXls(Data, sheet, xlsxFile, 0);
   })
 
  

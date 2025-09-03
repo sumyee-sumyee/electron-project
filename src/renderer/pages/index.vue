@@ -1,7 +1,7 @@
 <template>
     <div id="wrapper">
         <el-tabs style="height: 220px;" v-model="mode" >
-            <el-tab-pane value="Outdoor" :disabled="!ChangeEn" label="水冷机组监控"><WaterCooling></WaterCooling></el-tab-pane>
+            <el-tab-pane value="Outdoor" :disabled="!ChangeEn" label="自变量灵巧手监控"><WaterCooling></WaterCooling></el-tab-pane>
             <el-tab-pane :disabled="!ChangeEn" :label="$t('Title.Information')" ><system-information></system-information></el-tab-pane>
         </el-tabs>
     </div>  

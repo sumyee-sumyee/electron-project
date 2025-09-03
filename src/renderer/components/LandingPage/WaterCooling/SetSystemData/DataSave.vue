@@ -52,12 +52,12 @@
   import InputNumber from '@/components/InputNumber'
   import InputHex from '@/components/InputHex'
   import { ipcRenderer } from 'electron'
+  import {APP_EVENT_STORE_FILE_DIALOG} from '../../../../js/constants/IndoorConstants'
   import {
     APP_EVENT_INIT_XLSX,
     APP_EVENT_CLOSE_XLSX,
     IPC_CHANNEL_STORE_FILE_DIALOG,
   } from '../../../../js/constants/ElectronConstants'
-import { EventBus } from "../../../../Utils/EventBus"
 export default {
   data () {
     return {
@@ -76,7 +76,7 @@ export default {
   computed: {
     filename: {
       get () { return this.$store.state.SystemData.OutcsvFilePath },
-      set (value) {this.$store.dispatch('SetOutCsvFilePath', OutcsvFilePath)}
+      set (value) {this.$store.dispatch('SetOutCsvFilePath', value)}
     }
   },
   methods: {
@@ -98,6 +98,10 @@ export default {
     })
     ipcRenderer.on('closeSys', (event, arg) => {
       this.isSys = false
+    })
+    ipcRenderer.on('APP_EVENT_STORE_FILE_DIALOG', (event, filePath) => {
+        console.log(filePath)
+        this.$store.dispatch('SetOutCsvFilePath', filePath)
     })
   },
   watch: {

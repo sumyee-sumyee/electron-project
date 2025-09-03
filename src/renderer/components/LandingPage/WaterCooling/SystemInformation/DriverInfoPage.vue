@@ -63,7 +63,7 @@
       </el-col> 
 
       <el-col :span="1"  style="margin-top:5px;">
-        Ver 1.9
+        Ver 1.0
       </el-col> 
     </el-row> 
   </div>
@@ -79,9 +79,10 @@ import {
     IPC_CHANNEL_STOP_DOWNLOAD,
     IPC_CHANNEL_REFRESH_COM_LIST,
     IPC_CHANNEL_START_CONNECT,
+    APP_EVENT_COM_LIST,
   } from '../../../../js/constants/ElectronConstants'
   import {
-    APP_REPORT_UART_RECV_DATA,
+    APP_REPORT_UART_DATA,
   } from '../../../../js/constants/IndoorConstants'
 import { constants } from 'fs';
 
@@ -127,7 +128,6 @@ export default {
   },
 
   created: function () {
-    console.log(1111111111111111)
     console.log(this.$store.state.SystemData,'$store.state.SystemData.comOptions')
     ipcRenderer.on(APP_EVENT_CONNECT_OK, (event, arg) => {
       if (this.$store.state.SystemData.MonitorMode=== 'outdoor') {
@@ -139,25 +139,30 @@ export default {
         this.currentStatue = false;
       }
     })
-
-    //Serial Data 
-    ipcRenderer.on(APP_REPORT_UART_RECV_DATA, (event, arg) => {
-      let uint8ModbusData = [], uint16MudbusData = [];
-
-      uint8ModbusData = arg.slice(0, arg.length - 2);
-      uint8ModbusData = uint8ModbusData.slice(3);
-
-      for (let i = 0; i < (arg[2]/2); i++) {
-        uint16MudbusData[i] = ((uint8ModbusData[i*2] << 8) | (uint8ModbusData[i*2 + 1]))
-      }
-      
-
-      this.HeaderData.Version = "SWBP"  + addPreZero((uint16MudbusData[104-20]>>8)) + "V" + addPreZero((uint16MudbusData[104-20] & 0xFF))
-      this.HeaderData.CRC32 = "0X"+CRC32(uint16MudbusData[110-20]) + CRC32(uint16MudbusData[111-20]);
-      this.HeaderData.EEPROMCheck = '---'
+    ipcRenderer.on('APP_EVENT_COM_LIST', (event, comList) => {
+        this.$store.dispatch('SetComList', comList);
+    });
 
     
-  })
+
+    //Serial Data 
+//     ipcRenderer.on(APP_REPORT_UART_DATA, (event, arg) => {
+//       let uint8ModbusData = [], uint16MudbusData = [];
+
+//       uint8ModbusData = arg.slice(0, arg.length - 2);
+//       uint8ModbusData = uint8ModbusData.slice(3);
+
+//       for (let i = 0; i < (arg[2]/2); i++) {
+//         uint16MudbusData[i] = ((uint8ModbusData[i*2] << 8) | (uint8ModbusData[i*2 + 1]))
+//       }
+      
+
+//       this.HeaderData.Version = "SWBP"  + addPreZero((uint16MudbusData[104-20]>>8)) + "V" + addPreZero((uint16MudbusData[104-20] & 0xFF))
+//       this.HeaderData.CRC32 = "0X"+CRC32(uint16MudbusData[110-20]) + CRC32(uint16MudbusData[111-20]);
+//       this.HeaderData.EEPROMCheck = '---'
+
+    
+//   })
 
       //程序版本号
       function addPreZero(NumberSource){

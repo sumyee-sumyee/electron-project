@@ -23,11 +23,13 @@
           <el-footer class="my-footer">
             <fieldset fieldset style=" border-color: white; height: 200px">
               <el-tabs type="border-card"  style=" height: 195px">
-                <el-tab-pane style="height:110px" label="手动模式"><ManualSetPage></ManualSetPage></el-tab-pane>
-                <el-tab-pane style="height:110px" label="故障屏蔽"><MaskSetPage></MaskSetPage></el-tab-pane>
-                <el-tab-pane style="height:110px" label="参数修改"><SetEepromPage></SetEepromPage></el-tab-pane>
-                <el-tab-pane style="height:110px" label="参数界面"><SetParamTablePage></SetParamTablePage></el-tab-pane>
-                <el-tab-pane style="height:110px" label="数据监控"><ValueWatchPage></ValueWatchPage></el-tab-pane>
+                <el-tab-pane style="height:110px" label="灵巧手控制"><SetHand></SetHand></el-tab-pane>
+                <el-tab-pane style="height:110px" label="关节位置控制"><SetJointAbsPos></SetJointAbsPos></el-tab-pane>
+                <el-tab-pane style="height:110px" label="设置电机增量位置"><SetMotorIncPos></SetMotorIncPos></el-tab-pane>
+                <el-tab-pane style="height:110px" label="设置电机绝对位置"><SetMotorAbsPos></SetMotorAbsPos></el-tab-pane>
+                <el-tab-pane style="height:110px" label="电机开关/零点/校准"><SetMotorRunParam></SetMotorRunParam></el-tab-pane>
+                <el-tab-pane style="height:110px" label="编码器零点/方向"><SetEncoderParam></SetEncoderParam></el-tab-pane>
+                <el-tab-pane style="height:110px" label="设置电机最大电流"><SetMotorIq></SetMotorIq></el-tab-pane>
                 <el-tab-pane style="height:110px" label="数据保存"><DataSavePage></DataSavePage></el-tab-pane>
               </el-tabs>
             </fieldset>
@@ -51,33 +53,18 @@ import SystemInfoPage from '@/components/LandingPage/WaterCooling/SystemInformat
 import WarningPage from '@/components/LandingPage/WaterCooling/SystemInformation/WarningPage' 
 
 //设置数据页面
-import SetEepromPage from '@/components/LandingPage/WaterCooling/SetSystemData/SetEeprom' 
-import ManualSetPage from '@/components/LandingPage/WaterCooling/SetSystemData/ManualSet' 
-import MaskSetPage from '@/components/LandingPage/WaterCooling/SetSystemData/MaskSet' 
-import BurnParamPage from '@/components/LandingPage/WaterCooling/SetSystemData/BurnParam' 
-import ValueWatchPage from '@/components/LandingPage/WaterCooling/SetSystemData/ValueWatch' 
+import SetHand from '@/components/LandingPage/WaterCooling/SetSystemData/SetHand' 
+import SetJointAbsPos from '@/components/LandingPage/WaterCooling/SetSystemData/SetJointAbsPos' 
+import SetMotorAbsPos from '@/components/LandingPage/WaterCooling/SetSystemData/SetMotorAbsPos' 
+import SetMotorIncPos from '@/components/LandingPage/WaterCooling/SetSystemData/SetMotorIncPos' 
+import SetMotorRunParam from '@/components/LandingPage/WaterCooling/SetSystemData/SetMotorRunParam' 
+import SetEncoderParam from '@/components/LandingPage/WaterCooling/SetSystemData/SetEncoderParam'
+import SetMotorIq from '@/components/LandingPage/WaterCooling/SetSystemData/SetMotorIq' 
 import DataSavePage from '@/components/LandingPage/WaterCooling/SetSystemData/DataSave' 
-import SetParamTablePage from '@/components/LandingPage/WaterCooling/SetSystemData/SetParamTable'
-import {
-    APP_EVENT_CONNECT_OK,
-    APP_EVENT_CONNECT_NG,
-    IPC_CHANNEL_STOP_DOWNLOAD,
-    IPC_CHANNEL_REFRESH_COM_LIST,
-    IPC_CHANNEL_START_CONNECT,
-    IPC_CHANNEL_DATA_REFRESH,
-    APP_EVENT_INIT_XLSX,
-    APP_EVENT_CLOSE_XLSX,
-    APP_EVENT_OPEN_XLSX,
-    APP_EVENT_WRITE_XLSX,
-    APP_EVENT_STOP_XLSX,
-    APP_EVENT_CLEAN_DATA,
-    IPC_CHANNEL_DATA_REFRESH_CUBE
-  } from '../../js/constants/ElectronConstants'
-import { constants } from 'fs';
 
 export default {
   name: 'landing-page',
-  components: {DriverInfoPage, SystemInfoPage, WarningPage, SetEepromPage, ManualSetPage, MaskSetPage, BurnParamPage,ValueWatchPage, DataSavePage, SetParamTablePage},
+  components: {DriverInfoPage, SystemInfoPage, WarningPage, SetHand, SetJointAbsPos, SetMotorAbsPos, SetMotorIncPos, SetMotorRunParam, SetMotorIq, DataSavePage, SetEncoderParam},
   computed: {
    
   },

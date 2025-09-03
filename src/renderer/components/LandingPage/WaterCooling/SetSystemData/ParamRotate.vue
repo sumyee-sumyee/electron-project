@@ -228,7 +228,7 @@
 <script>
   import { ipcRenderer } from 'electron'
   import {
-    APP_SEND_SIGNAL_DATA_06_CMD,
+    APP_TOUCH_BUTTON_SEND_MULT_CMD,
   } from '../../../../js/constants/IndoorConstants'
 export default {
   name: "OutTable",
@@ -284,7 +284,7 @@ export default {
         default:
           break;
       }
-      ipcRenderer.send(APP_SEND_SIGNAL_DATA_06_CMD, {
+      ipcRenderer.send(APP_TOUCH_BUTTON_SEND_MULT_CMD, {
         Length: this.EEPROMType.Length,
         Address: this.EEPROMType.Address,
         Data: this.EEPROMType.Data,
@@ -339,7 +339,7 @@ export default {
         default:
           break;
       }
-      ipcRenderer.send(APP_SEND_SIGNAL_DATA_06_CMD, {
+      ipcRenderer.send(APP_TOUCH_BUTTON_SEND_MULT_CMD, {
         Length: this.EEPROMType.Length,
         Address: this.EEPROMType.Address,
         Data: this.EEPROMType.Data,
@@ -382,7 +382,7 @@ export default {
         default:
           break;
       }
-      ipcRenderer.send(APP_SEND_SIGNAL_DATA_06_CMD, {
+      ipcRenderer.send(APP_TOUCH_BUTTON_SEND_MULT_CMD, {
         Length: this.EEPROMType.Length,
         Address: this.EEPROMType.Address,
         Data: this.EEPROMType.Data,

@@ -14,8 +14,8 @@ export default {
   },
   watch: {
     inputNumber (val) {
-      console.log(val)
-      this.inputNumber = this.inputNumber.replace(/[^0-9]/g,'')
+      //console.log(val)
+      this.inputNumber = val.replace(/[^0-9\-]/g, '').replace(/(?!^)-/g, '')
       this.$emit('update:inputs', this.inputNumber)
     }
   }

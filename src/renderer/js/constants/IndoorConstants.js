@@ -11,23 +11,27 @@ export const APP_REPORT_DEFAULT_LOG_PATH                 = "log-path" // 日志�
 export const APP_CMD_UART_INDOOR_REFLASH    = "uart-indoor-reflash"    // 刷新串口
 export const APP_CMD_UART_INDOOR_CONNECT    = "uart-indoor-connect"    // 连接串口
 export const APP_CMD_UART_INDOOR_DISCONN    = "uart-indoor-disconn"    // 断开串口连接
-export const APP_CMD_UART_INDOOR_COMM_SEND  = "uart-indoor-comm-send"  // 串口通用数据发送命令
-export const APP_CMD_UART_INDOOR_SEND_QUERY = "uart-indoor-send-query" // 串口发送查询命令
-export const APP_SEND_SIGNAL_DATA_06_CMD       = "memory-indoor-write"    // 写内存
+
+export const APP_TOUCH_BUTTON_SEND_MULT_CMD     = "rs485-write-multiple"    // 写内存
+export const APP_TOUCH_BUTTON_SEND_SINGLE_CMD   = "rs485-write-single"      // 设置手动参数
+export const APP_TOUCH_BUTTON_READ_CMD         = "rs485-read"              // 设置手动参数
+
 export const APP_CMD_MEM_INDOOR_READ        = "memory-indoor-read"     // 读内存
+
 export const APP_CMD_MEM_INDOOR_LOAD_FILE   = "memory-indoor-loadfile" // 加载bin文件
 
 export const  APP_CMD_LOAD_FILE_NAME        = "indoor-loadfile-name" // 加载bin文件
 
 
 export const APP_CMD_GET_MANUAL_DATA        = "get-manual-data"         // 设置手动参数
-export const APP_CMD_SET_MANUAL_DATA        = "set-manual-data"         // 设置手动参数
+
 export const APP_CMD_SET_WIRTE_SYSTEM_DATA  = "set-wirte-system-data"   // 设置系统参数
 export const APP_CMD_SET_READ_SYSTEM_DATA   = "set-read-system-data"    // 设置系统参数
 export const APP_CMD_GET_SYSTEM_DATA        = "get-system-data"         // 设置系统参数
-export const APP_CMD_SET_PARAM_DATA        = "set-system-param"         // 设置系统参数
-export const APP_REPORT_UART_RECV_DATA      = 'receive-data-broadcast'
-export const APP_WATCH_DATA                 = 'watch-data'
+export const APP_CMD_SET_PARAM_DATA         = "set-system-param"         // 设置系统参数
+export const APP_REPORT_UART_DATA           = 'receive-data-broadcast'
+export const APP_REPORT_TOUCH_READ_DATA     = 'receive-data-touch-read'
+export const APP_EVENT_STORE_FILE_DIALOG    = 'store-data'
 export const APP_WATCH_DATA_REFRESH         = 'watch-data-refresh'
 
 /* MainProcess --> View */

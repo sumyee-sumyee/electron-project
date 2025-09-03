@@ -60,7 +60,7 @@ export const APP_EVENT_SET_EEPROM_NG = 'set-eepromNG'
 export const APP_EVENT_BURN_EEPROM_OK = 'brun-eepromOK'
 export const APP_EVENT_BURN_EEPROM_NG = 'brun-eepromNG'
 
-export const APP_EVENT_SET_EEPROM_PASSWORD  = 'set-eeprom-password'
+export const APP_EVENT_COM_LIST  = 'serialport-list'
 export const APP_EVENT_BURN_EEPROM_PASSWORD = 'brun-eeprom-password'
 export const APP_EVENT_SET_EEPROM   = 'set-eeprom'
 export const APP_EVENT_BURN_EEPROM  = 'brun-eeprom'

@@ -30,7 +30,7 @@ export class LogUtils {
      * @param {string} content 需要保存的字符好
      */
     WriteSrcLog(content) {
-        console.log(content)
+        //console.log(content)
         // electronFs.appendFile(this.srcLogPath, content, function () {
         //     console.log('追加内容完成');
         // });
@@ -57,7 +57,7 @@ export class LogUtils {
         this.objsArray.forEach(element => {
             for (let item in element) {
                 array.push(element[item]);
-                console.log(item, element[item]);
+                //console.log(item, element[item]);
             }
         });
 
