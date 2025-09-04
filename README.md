@@ -20,7 +20,7 @@ npm run electron:build
 
 ### Compiles and minifies for production-linux
 ```
-electron:build:linux
+npm electron:build:linux
 ```
 
 ### Lints and fixes files
