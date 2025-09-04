@@ -167,6 +167,7 @@ export default {
   padding-right: 2px !important;
   padding-left: 2px !important;
 
+  flex-grow: unset !important;
 }
 .conter .my-footer{
   

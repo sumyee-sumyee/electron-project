@@ -1544,7 +1544,7 @@ export default {
     height: 26px !important;
   }
   .my-main .el-col-4 .progress-box{
-    height: 18px; 
+    {/* height: 18px;  */}
   }
   .my-main .el-tabs__nav .el-tabs__item{
   height: 35px;
