@@ -13,9 +13,14 @@ npm install
 npm run electron:serve
 ```
 
-### Compiles and minifies for production
+### Compiles and minifies for production-win
 ```
 npm run electron:build
+```
+
+### Compiles and minifies for production-linux
+```
+electron:build:linux
 ```
 
 ### Lints and fixes files

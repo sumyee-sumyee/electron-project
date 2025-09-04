@@ -1,0 +1,9 @@
+# electron-builder.yml
+remoteBuild: false          # 再确认一次
+linux:
+  target:
+    - target: tar.gz        # 纯本地，Windows 也能打
+      arch: [x64]
+    # 如需 deb 也加进来
+    # - target: deb
+    #   arch: [x64]
