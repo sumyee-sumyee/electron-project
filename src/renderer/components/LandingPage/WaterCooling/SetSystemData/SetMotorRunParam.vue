@@ -493,4 +493,10 @@
   .el-col-3{
     margin-bottom: 4px;
   }
+  .el-carousel__container {
+    transition: none !important;
+  }
+  .el-carousel__item {
+    transition: none !important;
+  }
   </style>

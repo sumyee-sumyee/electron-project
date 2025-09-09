@@ -105,31 +105,35 @@
       <el-col :span="2"><el-button type="text" style="margin-right:3px;"></el-button ></el-col>
     </el-row>
 
-    <el-row  style="margin-top:0px; " type="flex" justify="center">
-      <el-col :span="9" style="min-height:1px;">
+    <el-row  style="margin-top:10px; margin-left:15px; margin-right:15px;">
+     <el-col :span="5" style="min-height:1px;">
         <div></div>
       </el-col>
-      <el-col :span="6">
-        <el-button style="width:80% " 
-          type="primary" plain size="mini" 
-          @click="sendJointPosMsg">  
-          发送手动参数
-        </el-button> 
+      <el-col :span="9" >
+         <div class="progress-box" style="margin-right: 10px;">
+          <el-button type="text" size = "mini" style="margin-right:3px;">关节控制单位:</el-button >
+          <el-input size="mini" v-model="showJointUnit" style="min-width: 70px; max-width: 150px;" readonly/>
+        </div>
       </el-col>
-      <el-col :span="8" style="min-height:1px;">
+      <el-col :span="8" >
+        <el-button size="mini" @click="sendJointPosMsg">发送手动参数</el-button>
+        <el-button size="mini" @click="switchJointUnit">切换关节单位</el-button>
+      </el-col> 
+      <el-col :span="6" style="min-height:1px;">
         <div></div>
       </el-col>
-    </el-row> 
+    </el-row>   
   </div>  
 </template>
 
 <script>
 import InputNumber from '@/components/InputNumber'
 import { ipcRenderer } from 'electron'
-import { APP_TOUCH_BUTTON_SEND_MULT_CMD } from '../../../../js/constants/IndoorConstants'
+import { APP_TOUCH_BUTTON_SEND_MULT_CMD, APP_MAIN_SWITCH_JOINT_UNIT } from '../../../../js/constants/IndoorConstants'
 export default {
    data () {
     return {
+      showJointUnit: '标量值',
       JointPosData: {
           Data: [32768,32768,32768,32768,32768,32768,32768,32768,32768,32768,32768,32768,32768,32768,32768],
         }
@@ -141,16 +145,40 @@ export default {
  
   methods: {
     sendJointPosMsg () {
-        const uint32Data = this.JointPosData.Data.map(v => {
+        let uint32Data = this.JointPosData.Data.map(v => {
             const num = Number(v);
             return num >>> 0;
         });
-        //console.log('sendJointPosMsg', uint32Data);
+
+        if (this.showJointUnit === '度数(单位:1°)') {
+            uint32Data = uint32Data.map(val => Math.round((val * 65536) / 360) + 32768);
+        }
+        console.log('sendJointPosMsg', uint32Data);
         ipcRenderer.send(APP_TOUCH_BUTTON_SEND_MULT_CMD, {
             CmdType: 'SetJointAbsPosCmd',
             Data: uint32Data,
         });
       
+    },
+    switchJointUnit () {
+    
+        if ( this.showJointUnit === '标量值') {
+            this.showJointUnit = '度数(单位:1°)';
+            for (let index = 0; index < this.JointPosData.Data.length; index++) {
+                this.JointPosData.Data[index] = Math.round((this.JointPosData.Data[index] - 32768) * 360 / 65536);
+            }
+            ipcRenderer.send(APP_MAIN_SWITCH_JOINT_UNIT, {
+                Type: 'Degree',
+            })
+        } else if (this.showJointUnit === '度数(单位:1°)') {
+            this.showJointUnit = '标量值';
+            for (let index = 0; index < this.JointPosData.Data.length; index++) {
+                this.JointPosData.Data[index] = Math.round((this.JointPosData.Data[index] * 65536) / 360) + 32768;
+            }
+            ipcRenderer.send(APP_MAIN_SWITCH_JOINT_UNIT, {
+                Type: 'Scalar',
+            })
+        }
     }
   },
 }
@@ -168,5 +196,11 @@ export default {
 }
 .manual-set .el-select{
   margin-top: 5px;
+}
+.el-carousel__container {
+transition: none !important;
+}
+.el-carousel__item {
+transition: none !important;
 }
 </style>

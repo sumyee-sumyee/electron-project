@@ -15,8 +15,14 @@ export default {
   watch: {
     inputNumber (val) {
       //console.log(val)
-      this.inputNumber = val.replace(/[^0-9\-]/g, '').replace(/(?!^)-/g, '')
-      this.$emit('update:inputs', this.inputNumber)
+    //   this.inputNumber = val.replace(/[^0-9\-]/g, '').replace(/(?!^)-/g, '')
+    //   this.$emit('update:inputs', this.inputNumber)
+        const strVal = String(val)
+        this.inputNumber = strVal.replace(/[^0-9\-]/g, '').replace(/(?!^)-/g, '')
+        this.$emit('update:inputs', this.inputNumber)
+    },
+    inputs (val) {
+      this.inputNumber = val
     }
   }
 }

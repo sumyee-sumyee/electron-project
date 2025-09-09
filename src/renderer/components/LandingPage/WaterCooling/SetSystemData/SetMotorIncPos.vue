@@ -106,7 +106,7 @@
       <el-col :span="2"><el-button type="text" style="margin-right:3px;"></el-button ></el-col>
     </el-row>
 
-    <el-row  style="margin-top:1px; " type="flex" justify="center">
+    <el-row  style="margin-top:4px; " type="flex" justify="center">
       <el-col :span="9" style="min-height:1px;">
         <div></div>
       </el-col>

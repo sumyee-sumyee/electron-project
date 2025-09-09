@@ -1,7 +1,7 @@
 <template>
   <div >
 
-    <el-row  style=" margin-top:0px; margin-left:15px; margin-right:15px;">
+    <el-row  style=" margin-top:2px; margin-left:15px; margin-right:15px;">
       <el-col :span="2" style="min-height:1px;">
         <div></div>
       </el-col>
@@ -135,7 +135,7 @@
   </el-row>   
 
   
-  <el-row  style="margin-top:0px; margin-left:15px; margin-right:15px;">
+  <el-row  style="margin-top:10px; margin-left:15px; margin-right:15px;">
      <el-col :span="6" style="min-height:1px;">
         <div></div>
       </el-col>

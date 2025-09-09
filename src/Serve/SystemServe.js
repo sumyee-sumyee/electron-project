@@ -487,6 +487,9 @@ export class IPCSystemWin{
         });
 
 
+        ipcMain.on(IndoorIPCMsg.APP_MAIN_SWITCH_JOINT_UNIT, (event, arg) => {
+            this._sendIPCMsg(IndoorIPCMsg.APP_SWITCH_JOINT_UNIT, arg);
+        })
        
 
         //Save File
@@ -565,21 +568,30 @@ export class IPCSystemWin{
                             UartSendBuffer(this.sendMsgQueue.Dequeue(), 0);   
                         } else {
                             if (this.MessageCtrl.SetTimeoutNum === 0) {
-                                let cmdDataBuffer = [0x01, 0x04, 0x10, 0x03, 0x00, 0x5D];
-                                let crc16 = crc.crc16(cmdDataBuffer, 0xFFFF);
-                                let cmdUartSendBuffer = cmdDataBuffer.concat((crc16 & 0xff)).concat(((crc16 & 0xff00) >> 8));
-                                UartSendBuffer(cmdUartSendBuffer, 0);           
+                                let cmdData0Buffer = [0x01, 0x04, 0x10, 0x03, 0x00, 0x5D];
+                                let crc160 = crc.crc16(cmdData0Buffer, 0xFFFF);
+                                let cmdUart0SendBuffer = cmdData0Buffer.concat((crc160 & 0xff)).concat(((crc160 & 0xff00) >> 8));
+                                UartSendBuffer(cmdUart0SendBuffer, 0);           
                                 this.MessageCtrl.op_type = 'idle'
 
-                            } else {
+                            } else if (this.MessageCtrl.SetTimeoutNum === 1){
+                                let cmdData1Buffer = [0x01, 0x04, 0x10, 0x60, 0x00, 0x30];
+                                let crc161 = crc.crc16(cmdData1Buffer, 0xFFFF);
+                                let cmdUart1SendBuffer = cmdData1Buffer.concat((crc161 & 0xff)).concat(((crc161 & 0xff00) >> 8));
+                                UartSendBuffer(cmdUart1SendBuffer, 0);           
+                                this.MessageCtrl.op_type = 'idle'
+                            } else if (this.MessageCtrl.SetTimeoutNum === 2){
                                 let cmdData2Buffer = [0x01, 0x03, 0x00, 0x8d, 0x00, 0x1f];
                                 let crc162 = crc.crc16(cmdData2Buffer, 0xFFFF);
                                 let cmdUart2SendBuffer = cmdData2Buffer.concat((crc162 & 0xff)).concat(((crc162 & 0xff00) >> 8));
                                 UartSendBuffer(cmdUart2SendBuffer, 0);           
                                 this.MessageCtrl.op_type = 'idle'
-                            }
+                            } 
                            
-                            this.MessageCtrl.SetTimeoutNum ^= 1;
+                            this.MessageCtrl.SetTimeoutNum++;
+                            if (this.MessageCtrl.SetTimeoutNum >= 3) {
+                                this.MessageCtrl.SetTimeoutNum = 0;
+                            }
                             // console.log("send  --------------");
                         }
                       

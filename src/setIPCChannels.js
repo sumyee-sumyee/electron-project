@@ -81,7 +81,7 @@ function ModuleBusUartRead (data) {
 
 function SendUartDataHandler () {
 
-  let cmdDataBuffer = [0x01, 0x04, 0x10, 0x03, 0x00, 0x5D];
+  let cmdDataBuffer = [0x01, 0x04, 0x10, 0x03, 0x00, 0x8C];
   let crc16 = crc.crc16(cmdDataBuffer, 0xFFFF);
   let cmdUartSendBuffer = cmdDataBuffer.concat((crc16 & 0xff)).concat(((crc16 & 0xff00) >> 8));
 

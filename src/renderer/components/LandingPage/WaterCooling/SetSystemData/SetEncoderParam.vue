@@ -7,7 +7,7 @@
         :autoplay="false"
       >
         <el-carousel-item>
-          <el-radio-group v-model="radio1" style="margin-top:0px">
+          <el-radio-group v-model="radio1" style="margin-top:10px">
             <el-row type="flex" justify="center">
               <el-col :span="2" >
                 <div></div>
@@ -78,16 +78,16 @@
               </el-col>
             </el-row>
             <el-row type="flex" justify="center">
-              <el-col :span="3" style="min-height:1px;">
+              <el-col :span="2" style="min-height:1px;">
                 <div></div>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="17">
                 <div class="table-input">
                   <el-button type="text" size="mini">更改数据值：</el-button>
                   <el-input placeholder="0:不设置,1:0°,2:90°,3:180°,4:270°" v-model="DataType.SetZeroPoint"></el-input>
                 </div>
               </el-col>
-              <el-col :span="7">
+              <el-col :span="3">
                 <el-button size="mini" @click="saveRadio1">确认修改</el-button>
               </el-col>
               <el-col :span="2" style="min-height:1px;">
@@ -97,7 +97,7 @@
           </el-radio-group>
         </el-carousel-item>
         <el-carousel-item>
-          <el-radio-group v-model="radio2" style="margin-top:0px">
+          <el-radio-group v-model="radio2" style="margin-top:10px">
             <el-row type="flex" justify="center">
               <el-col :span="2" >
                 <div></div>
@@ -187,7 +187,7 @@
           </el-radio-group>
         </el-carousel-item>
         <el-carousel-item>
-          <el-radio-group v-model="radio3" style="margin-top:0px">
+          <el-radio-group v-model="radio3" style="margin-top:10px">
              <el-row type="flex" justify="center">
               <el-col :span="2" >
                 <div></div>
@@ -293,9 +293,9 @@ export default {
       radio3: 1,
       Address: 0x00,
       DataType: {
-        SetZeroPoint: 0,
-        SetDirValue: 0,
-        JointandMotorMap: 0,
+        SetZeroPoint: '',
+        SetDirValue: '',
+        JointandMotorMap: '',
       }
     };
   },

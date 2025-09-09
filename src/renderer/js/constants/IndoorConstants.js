@@ -16,7 +16,8 @@ export const APP_TOUCH_BUTTON_SEND_MULT_CMD     = "rs485-write-multiple"    // �
 export const APP_TOUCH_BUTTON_SEND_SINGLE_CMD   = "rs485-write-single"      // 设置手动参数
 export const APP_TOUCH_BUTTON_READ_CMD         = "rs485-read"              // 设置手动参数
 
-export const APP_CMD_MEM_INDOOR_READ        = "memory-indoor-read"     // 读内存
+export const APP_MAIN_SWITCH_JOINT_UNIT      = "switch-main-joint-unit"     // 
+export const APP_SWITCH_JOINT_UNIT      = "switch-joint-unit"     // 
 
 export const APP_CMD_MEM_INDOOR_LOAD_FILE   = "memory-indoor-loadfile" // 加载bin文件
 
