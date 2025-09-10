@@ -28,11 +28,6 @@
 </template>
 <script>
 import { ipcRenderer } from 'electron';
-// import { setTimeout } from 'timers';
-// import { EventBus } from "../../../../Utils/EventBus.js"
-// import { LogUtils } from '../../../../json/LogUtils';
-
-
 import {
     APP_REPORT_UART_DATA
   } from '../../../../js/constants/IndoorConstants'
@@ -48,28 +43,39 @@ export default {
       CurrentWarning:[{name:'无故障'}],
       infoText:'',
       infoTextContent:'',
-      FluorineSystemErr1: 0, 
-      FluorineDriverErr1: 0, 
-      FluorineSystemErr2: 0, 
-      FluorineDriverErr2: 0, 
-      WaterSystemErr: 0, 
-      WaterDriverErr: 0, 
+      Error01: 0, 
+      Error02: 0, 
+      Error03: 0, 
+      Error04: 0, 
+      Error05: 0, 
+      Error06: 0, 
+      Error07: 0, 
+      Error08: 0, 
+      Error09: 0, 
+      Error10: 0,  
+      Error11: 0, 
+      Error12: 0, 
+      Error13: 0, 
+      Error14: 0, 
+      Error15: 0,
       SystemErr: 0,
       ErrorData: {
-        FluorineSystemErr1: '', 
-        FluorineDriverErr1: '', 
-        FluorineSystemErr2: '', 
-        FluorineDriverErr2: '',
-        WaterSystemErr: '', 
-        WaterDriverErr: '', 
+        Error01: '',
+        Error02: '',
+        Error03: '',
+        Error04: '',
+        Error05: '',
+        Error06: '',
+        Error07: '',
+        Error08: '',
+        Error09: '',
+        Error10: '',
+        Error11: '',
+        Error12: '',
+        Error13: '',
+        Error14: '',
+        Error15: '',
         SystemErr: '',
-      },
-      DriverCode: {
-        CompressorDriverErrCode1: '',
-        CompressorDriverErrCode2: '',
-        FanDriverErrCode1: '',
-        FanDriverErrCode2: '',
-        PumpDriverErrCode: ''
       }
     }
 
@@ -100,941 +106,590 @@ export default {
   
   created: function () {
     //Serial Data 
-    // ipcRenderer.on(APP_REPORT_UART_DATA, (event, arg) => {
-    //   let uint8ModbusData = [], uint16MudbusData = []
-    //   let ErrTextTmp
- 
+    ipcRenderer.on(APP_REPORT_UART_DATA, (event, arg) => {
+        let uint8ModbusData = [], uint16MudbusData = []
+        let ErrTextTmp
 
-    //   uint8ModbusData = arg.slice(0, arg.length - 2);
-    //   uint8ModbusData = uint8ModbusData.slice(3);
+        uint8ModbusData = arg.slice(0, arg.length - 2);
+        uint8ModbusData = uint8ModbusData.slice(3);
 
-    //   for (let i = 0; i < (arg[2]/2); i++) {
-    //     uint16MudbusData[i] = ((uint8ModbusData[i*2] << 8) | (uint8ModbusData[i*2 + 1]))
-    //   }
+        for (let i = 0; i < (arg[2]/2); i++) {
+            uint16MudbusData[i] = ((uint8ModbusData[i*2] << 8) | (uint8ModbusData[i*2 + 1]))
+        }
 
-      // console.log("uint16MudbusData[3]:", uint16MudbusData[3]);
-      // console.log("uint16MudbusData[4]:", uint16MudbusData[4]);
-      // console.log("uint16MudbusData[5]:", uint16MudbusData[5]);
-      // console.log("uint16MudbusData[6]:", uint16MudbusData[6]);
-      // console.log("uint16MudbusData[7]:", uint16MudbusData[7]);
-      // console.log("uint16MudbusData[8]:", uint16MudbusData[8]);
-      // console.log("uint16MudbusData[9]:", uint16MudbusData[9]);
-    //   this.DriverCode.CompressorDriverErrCode1 = uint16MudbusData[122].toString();
-    //   this.DriverCode.CompressorDriverErrCode2 = uint16MudbusData[123].toString();
-    //   this.DriverCode.FanDriverErrCode1 = uint16MudbusData[124].toString();
-    //   this.DriverCode.FanDriverErrCode2 = uint16MudbusData[125].toString();
-    //   this.DriverCode.PumpDriverErrCode = uint16MudbusData[126].toString();
+        if (arg[1] === 0x04) {
+            if (arg[2] === (0x5F * 2)) {
+                ErrTextTmp = ''
+                if (uint16MudbusData[3] != this.SystemErr) {
+                    this.SystemErr = uint16MudbusData[3];
+                    this.ErrorData.SystemErr = '';
+                    if (this.SystemErr & 0x0001) {
+                      this.addRow('电源欠压') 
+                      ErrTextTmp += '电源欠压 '
+                      this.ErrorData.SystemErr += '电源欠压 '
+                    } else {
+                      this.deleteRow('电源欠压');
+                    }
 
-    //   ErrTextTmp = ''
-     
-    //   if (uint16MudbusData[3] != this.FluorineSystemErr1)
-    //   {
-    //     this.FluorineSystemErr1 = uint16MudbusData[3];
-    //     this.ErrorData.FluorineSystemErr1 = ''
-    //     if (this.FluorineSystemErr1 & 0x0001) 
-    //     {
-    //       this.addRow('吸气温度传感器1故障') 
-    //       ErrTextTmp += '吸气温度传感器1故障 '
-    //       this.ErrorData.FluorineSystemErr1 += '吸气温度传感器1故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('吸气温度传感器1故障');
-    //     }
-        
-    //     if (this.FluorineSystemErr1 & 0x0002) 
-    //     {
-    //       this.addRow('排气温度传感器1故障') 
-    //       ErrTextTmp += '排气温度传感器1故障 ' 
-    //       this.ErrorData.FluorineSystemErr1 += '排气温度传感器1故障 ' 
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('排气温度传感器1故障');
-    //     }
+                    if (this.SystemErr & 0x0002) {
+                      this.addRow('电源过压') 
+                      ErrTextTmp += '电源过压 '
+                      this.ErrorData.SystemErr += '电源过压 '
+                    } else {
+                      this.deleteRow('电源过压');
+                    }
 
-    //     if (this.FluorineSystemErr1 & 0x0004) 
-    //     {
-    //       this.addRow('冷凝温度传感器1故障') 
-    //       ErrTextTmp += '冷凝温度传感器1故障 ' 
-    //       this.ErrorData.FluorineSystemErr1 += '冷凝温度传感器1故障 ' 
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('冷凝温度传感器1故障');
-    //     }
+                    if (this.SystemErr & 0x0004) {
+                      this.addRow('板卡温度过高') 
+                      ErrTextTmp += '板卡温度过高 '
+                      this.ErrorData.SystemErr += '板卡温度过高 '
+                    } else {
+                      this.deleteRow('板卡温度过高');
+                    }
+                }
 
-    //     if (this.FluorineSystemErr1 & 0x0008) 
-    //     {
-    //       this.addRow('蒸发温度传感器1故障')
-    //       ErrTextTmp += '蒸发温度传感器1故障 ' 
-    //       this.ErrorData.FluorineSystemErr1 += '蒸发温度传感器1故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('蒸发温度传感器1故障');
-    //     }
+                if (uint16MudbusData[4] != this.Error01) {
+                    this.Error01 = uint16MudbusData[4];
+                    this.ErrorData.Error01 = '';
+                    if (this.Error01 & 0x0001) {
+                      this.addRow('电机01缺相') 
+                      ErrTextTmp += '电机01缺相 '
+                      this.ErrorData.Error01 += '电机01缺相 '
+                    } else {
+                      this.deleteRow('电机01缺相');
+                    }
 
-    //     if (this.FluorineSystemErr1 & 0x0010) 
-    //     {
-    //       this.addRow('冷液管温度传感器1故障')
-    //       ErrTextTmp += '冷液管温度传感器1故障 '
-    //       this.ErrorData.FluorineSystemErr1 += '冷液管温度传感器1故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow( '冷液管温度传感器1故障');
-    //     }
+                    if (this.Error01 & 0x0002) {
+                      this.addRow('电机01过流') 
+                      ErrTextTmp += '电机01过流 '
+                      this.ErrorData.Error01 += '电机01过流 '
+                    } else {
+                      this.deleteRow('电机01过流');
+                    }
 
-    //     if (this.FluorineSystemErr1 & 0x0020) 
-    //     {
-    //       this.addRow('低压压力传感器1故障')
-    //       ErrTextTmp += '低压压力传感器1故障 '
-    //       this.ErrorData.FluorineSystemErr1 += '低压压力传感器1故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('低压压力传感器1故障');
-    //     }
+                    if (this.Error01 & 0x0004) {
+                      this.addRow('电机01堵转') 
+                      ErrTextTmp += '电机01堵转 '
+                      this.ErrorData.Error01 += '电机01堵转 '
+                    } else {
+                      this.deleteRow('电机01堵转');
+                    }
 
-    //     if (this.FluorineSystemErr1 & 0x0040) 
-    //     {
-    //       this.addRow('高压压力传感器1故障')
-    //       ErrTextTmp += '高压压力传感器1故障 '
-    //       this.ErrorData.FluorineSystemErr1 += '高压压力传感器1故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('高压压力传感器1故障');
-    //     }
+                    if (this.Error01 & 0x0008) {
+                      this.addRow('编码器01故障') 
+                      ErrTextTmp += '编码器01故障 '
+                      this.ErrorData.Error01 += '编码器01故障 '
+                    } else {
+                      this.deleteRow('编码器01故障');
+                    }
+                }
 
-    //     if (this.FluorineSystemErr1 & 0x0080) 
-    //     {
-    //       this.addRow('冷凝器温度1过高告警')
-    //       ErrTextTmp += '冷凝器温度1过高告警 '
-    //       this.ErrorData.FluorineSystemErr1 += '冷凝器温度1过高告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('冷凝器温度1过高告警');
-    //     }
+                if (uint16MudbusData[5] != this.Error02) {
+                    this.Error02 = uint16MudbusData[5];
+                    this.ErrorData.Error02 = '';
+                    if (this.Error02 & 0x0001) {
+                      this.addRow('电机01缺相') 
+                      ErrTextTmp += '电机01缺相 '
+                      this.ErrorData.Error02 += '电机01缺相 '
+                    } else {
+                      this.deleteRow('电机01缺相');
+                    }
 
-    //     if (this.FluorineSystemErr1 & 0x0100) 
-    //     {
-    //       this.addRow('冷凝器温度1过高锁定')
-    //       ErrTextTmp += '冷凝器温度1过高锁定 '
-    //       this.ErrorData.FluorineSystemErr1 += '冷凝器温度1过高锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('冷凝器温度1过高锁定');
-    //     }
+                    if (this.Error02 & 0x0002) {
+                      this.addRow('电机02过流') 
+                      ErrTextTmp += '电机02过流 '
+                      this.ErrorData.Error02 += '电机02过流 '
+                    } else {
+                      this.deleteRow('电机02过流');
+                    }
 
-    //     if (this.FluorineSystemErr1 & 0x0200) 
-    //     {
-    //       this.addRow('蒸发器温度1过低告警')
-    //       ErrTextTmp += '蒸发器温度1过低告警 '
-    //       this.ErrorData.FluorineSystemErr1 += '蒸发器温度1过低告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('蒸发器温度1过低告警');
-    //     }
+                    if (this.Error02 & 0x0004) {
+                      this.addRow('电机02堵转') 
+                      ErrTextTmp += '电机02堵转 '
+                      this.ErrorData.Error02 += '电机02堵转 '
+                    } else {
+                      this.deleteRow('电机02堵转');
+                    }
 
-    //     if (this.FluorineSystemErr1 & 0x0400) 
-    //     {
-    //       this.addRow('蒸发器温度1过低锁定')
-    //       ErrTextTmp += '蒸发器温度1过低锁定 '
-    //       this.ErrorData.FluorineSystemErr1 += '蒸发器温度1过低锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('蒸发器温度1过低锁定');
-    //     }
+                    if (this.Error02 & 0x0008) {
+                      this.addRow('编码器02故障') 
+                      ErrTextTmp += '编码器02故障 '
+                      this.ErrorData.Error02 += '编码器02故障 '
+                    } else {
+                      this.deleteRow('编码器02故障');
+                    }
+                }
 
-    //     if (this.FluorineSystemErr1 & 0x0800) 
-    //     {
-    //       this.addRow('蒸发器温度1过高告警')
-    //       ErrTextTmp += '蒸发器温度1过高告警 '
-    //       this.ErrorData.FluorineSystemErr1 += '蒸发器温度1过高告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('蒸发器温度1过高告警');
-    //     }
+                if (uint16MudbusData[6] != this.Error03) {
+                    this.Error03 = uint16MudbusData[6];
+                    this.ErrorData.Error03 = '';
+                    if (this.Error03 & 0x0001) {
+                      this.addRow('电机03缺相') 
+                      ErrTextTmp += '电机03缺相 '
+                      this.ErrorData.Error03 += '电机03缺相 '
+                    } else {
+                      this.deleteRow('电机03缺相');
+                    }
 
-    //     if (this.FluorineSystemErr1 & 0x1000) 
-    //     {
-    //       this.addRow('蒸发器温度1过高锁定')
-    //       ErrTextTmp += '蒸发器温度1过高锁定 '
-    //       this.ErrorData.FluorineSystemErr1 += '蒸发器温度1过高锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('蒸发器温度1过高锁定');
-    //     }
+                    if (this.Error03 & 0x0002) {
+                      this.addRow('电机03过流') 
+                      ErrTextTmp += '电机03过流 '
+                      this.ErrorData.Error03 += '电机03过流 '
+                    } else {
+                      this.deleteRow('电机03过流');
+                    }
 
-    //     if (this.FluorineSystemErr1 & 0x2000) 
-    //     {
-    //       this.addRow('排气温度1过高告警')
-    //       ErrTextTmp += '排气温度1过高告警 '
-    //       this.ErrorData.FluorineSystemErr1 += '排气温度1过高告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('排气温度1过高告警');
-    //     }
+                    if (this.Error03 & 0x0004) {
+                      this.addRow('电机03堵转') 
+                      ErrTextTmp += '电机03堵转 '
+                      this.ErrorData.Error03 += '电机03堵转 '
+                    } else {
+                      this.deleteRow('电机03堵转');
+                    }
 
-    //     if (this.FluorineSystemErr1 & 0x4000) 
-    //     {
-    //       this.addRow('排气温度1过高锁定')
-    //       ErrTextTmp += '排气温度1过高锁定 '
-    //       this.ErrorData.FluorineSystemErr1 += '排气温度1过高锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('排气温度1过高锁定');
-    //     }
-    //   }
+                    if (this.Error03 & 0x0008) {
+                      this.addRow('编码器03故障') 
+                      ErrTextTmp += '编码器03故障 '
+                      this.ErrorData.Error03 += '编码器03故障 '
+                    } else {
+                      this.deleteRow('编码器03故障');
+                    }
+                }
 
-    //   if (uint16MudbusData[4] != this.FluorineDriverErr1)
-    //   {
-    //     this.FluorineDriverErr1 = uint16MudbusData[4];
-    //     if (this.FluorineDriverErr1 & 0x0004) 
-    //     { 
-    //       this.addRow('高压开关1告警')
-    //       ErrTextTmp += '高压开关1告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('高压开关1告警');
-    //     }
+                if (uint16MudbusData[7] != this.Error04) {
+                    this.Error04 = uint16MudbusData[7];
+                    this.ErrorData.Error04 = '';
+                    if (this.Error04 & 0x0001) {
+                      this.addRow('电机04缺相') 
+                      ErrTextTmp += '电机04缺相 '
+                      this.ErrorData.Error04 += '电机04缺相 '
+                    } else {
+                      this.deleteRow('电机04缺相');
+                    }
 
+                    if (this.Error04 & 0x0002) {
+                      this.addRow('电机04过流') 
+                      ErrTextTmp += '电机04过流 '
+                      this.ErrorData.Error04 += '电机04过流 '
+                    } else {
+                      this.deleteRow('电机04过流');
+                    }
 
-    //     if (this.FluorineDriverErr1 & 0x0008) 
-    //     { 
-    //       this.addRow('风机1驱动故障')
-    //       ErrTextTmp += '风机1驱动故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('风机1驱动故障');
-    //     }
+                    if (this.Error04 & 0x0004) {
+                      this.addRow('电机04堵转') 
+                      ErrTextTmp += '电机04堵转 '
+                      this.ErrorData.Error04 += '电机04堵转 '
+                    } else {
+                      this.deleteRow('电机04堵转');
+                    }
 
-    //     if (this.FluorineDriverErr1 & 0x0010) 
-    //     { 
-    //       this.addRow('高压开关1故障')
-    //       ErrTextTmp += '高压开关1故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('高压开关1故障');
-    //     }
+                    if (this.Error04 & 0x0008) {
+                      this.addRow('编码器04故障') 
+                      ErrTextTmp += '编码器04故障 '
+                      this.ErrorData.Error04 += '编码器04故障 '
+                    } else {
+                      this.deleteRow('编码器04故障');
+                    }
+                }
 
+                if (uint16MudbusData[8] != this.Error05) {
+                    this.Error05 = uint16MudbusData[8];
+                    this.ErrorData.Error05 = '';
+                    if (this.Error05 & 0x0001) {
+                      this.addRow('电机05缺相') 
+                      ErrTextTmp += '电机05缺相 '
+                      this.ErrorData.Error05 += '电机05缺相 '
+                    } else {
+                      this.deleteRow('电机05缺相');
+                    }
 
-    //     if (this.FluorineDriverErr1 & 0x0020) 
-    //     {
-    //       this.addRow('高压开关1锁定')
-    //       ErrTextTmp += '高压开关1锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('高压开关1锁定');
-    //     }
+                    if (this.Error05 & 0x0002) {
+                      this.addRow('电机05过流') 
+                      ErrTextTmp += '电机05过流 '
+                      this.ErrorData.Error05 += '电机05过流 '
+                    } else {
+                      this.deleteRow('电机05过流');
+                    }
 
-    //     if (this.FluorineDriverErr1 & 0x0040) 
-    //     {
-    //       this.addRow('压缩机1通讯故障')
-    //       ErrTextTmp += '压缩机1通讯故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('压缩机1通讯故障');
-    //     }
+                    if (this.Error05 & 0x0004) {
+                      this.addRow('电机05堵转') 
+                      ErrTextTmp += '电机05堵转 '
+                      this.ErrorData.Error05 += '电机05堵转 '
+                    } else {
+                      this.deleteRow('电机05堵转');
+                    }
 
-    //     if (this.FluorineDriverErr1 & 0x0080) 
-    //     {
-    //       this.addRow('压缩机1AC电流过高告警')
-    //       ErrTextTmp += '压缩机1AC电流过高告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('压缩机1AC电流过高告警');
-    //     }
+                    if (this.Error05 & 0x0008) {
+                      this.addRow('编码器05故障') 
+                      ErrTextTmp += '编码器05故障 '
+                      this.ErrorData.Error05 += '编码器05故障 '
+                    } else {
+                      this.deleteRow('编码器05故障');
+                    }
+                }
 
-    //     if (this.FluorineDriverErr1 & 0x0100) 
-    //     {
-    //       this.addRow('压缩机1驱动故障告警' + this.DriverCode.CompressorDriverErrCode1);
-    //       ErrTextTmp += '压缩机1驱动故障告警 ' + this.DriverCode.CompressorDriverErrCode1 + ' ';
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('压缩机1驱动故障告警' + this.DriverCode.CompressorDriverErrCode1 );
-    //     }
+                if (uint16MudbusData[9] != this.Error06) {
+                    this.Error06 = uint16MudbusData[9];
+                    this.ErrorData.Error06 = '';
+                    if (this.Error06 & 0x0001) {
+                      this.addRow('电机06缺相') 
+                      ErrTextTmp += '电机06缺相 '
+                      this.ErrorData.Error06 += '电机06缺相 '
+                    } else {
+                      this.deleteRow('电机06缺相');
+                    }
 
-    //     if (this.FluorineDriverErr1 & 0x0200) 
-    //     {
-    //       this.addRow('压缩机1AC电流过高锁定')
-    //       ErrTextTmp += '压缩机1AC电流过高锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('压缩机1AC电流过高锁定');
-    //     }
+                    if (this.Error06 & 0x0002) {
+                      this.addRow('电机06过流') 
+                      ErrTextTmp += '电机06过流 '
+                      this.ErrorData.Error06 += '电机06过流 '
+                    } else {
+                      this.deleteRow('电机06过流');
+                    }
 
-    //     if (this.FluorineDriverErr1 & 0x0400) 
-    //     {
-    //       this.addRow('压缩机1驱动故障锁定')
-    //       ErrTextTmp += '压缩机1驱动故障锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('压缩机1驱动故障锁定');
-    //     }
+                    if (this.Error06 & 0x0004) {
+                      this.addRow('电机06堵转') 
+                      ErrTextTmp += '电机06堵转 '
+                      this.ErrorData.Error06 += '电机06堵转 '
+                    } else {
+                      this.deleteRow('电机06堵转');
+                    }
 
-    //     if (this.FluorineDriverErr1 & 0x0800) 
-    //     {
-    //       this.addRow('风机1通讯故障')
-    //       ErrTextTmp += '风机1通讯故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('风机1通讯故障');
-    //     }
+                    if (this.Error06 & 0x0008) {
+                      this.addRow('编码器06故障') 
+                      ErrTextTmp += '编码器06故障 '
+                      this.ErrorData.Error06 += '编码器06故障 '
+                    } else {
+                      this.deleteRow('编码器06故障');
+                    }
+                }
 
-    //     if (this.FluorineDriverErr1 & 0x1000) 
-    //     {
-    //       this.addRow('风机1AC电流过高告警')
-    //       ErrTextTmp += '风机1AC电流过高告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('风机1AC电流过高告警');
-    //     }
+                if (uint16MudbusData[10] != this.Error07) {
+                    this.Error07 = uint16MudbusData[10];
+                    this.ErrorData.Error07 = '';
+                    if (this.Error07 & 0x0001) {
+                      this.addRow('电机07缺相') 
+                      ErrTextTmp += '电机07缺相 '
+                      this.ErrorData.Error07 += '电机07缺相 '
+                    } else {
+                      this.deleteRow('电机07缺相');
+                    }
 
-    //     if (this.FluorineDriverErr1 & 0x2000) 
-    //     {
-    //       this.addRow('风机1驱动故障告警' + this.DriverCode.FanDriverErrCode1 )
-    //       ErrTextTmp += '风机1驱动故障告警 ' + this.DriverCode.FanDriverErrCode1  + ' '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('风机1驱动故障告警' + this.DriverCode.FanDriverErrCode1);
-    //     }
+                    if (this.Error07 & 0x0002) {
+                      this.addRow('电机07过流') 
+                      ErrTextTmp += '电机07过流 '
+                      this.ErrorData.Error07 += '电机07过流 '
+                    } else {
+                      this.deleteRow('电机07过流');
+                    }
 
-    //     if (this.FluorineDriverErr1 & 0x4000) 
-    //     {
-    //       this.addRow('风机1AC电流过高锁定')
-    //       ErrTextTmp += '风机1AC电流过高锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('风机1AC电流过高锁定');
-    //     }
+                    if (this.Error07 & 0x0004) {
+                      this.addRow('电机07堵转') 
+                      ErrTextTmp += '电机07堵转 '
+                      this.ErrorData.Error07 += '电机07堵转 '
+                    } else {
+                      this.deleteRow('电机07堵转');
+                    }
 
-    //     if (this.FluorineDriverErr1 & 0x8000) 
-    //     {
-    //       this.addRow('风机1驱动故障锁定')
-    //       ErrTextTmp += '风机1驱动故障锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('风机1驱动故障锁定');
-    //     }
+                    if (this.Error07 & 0x0008) {
+                      this.addRow('编码器07故障') 
+                      ErrTextTmp += '编码器07故障 '
+                      this.ErrorData.Error07 += '编码器07故障 '
+                    } else {
+                      this.deleteRow('编码器07故障');
+                    }
+                }
 
-    //   }
+                if (uint16MudbusData[11] != this.Error08) {
+                    this.Error08 = uint16MudbusData[11];
+                    this.ErrorData.Error08 = '';
+                    if (this.Error08 & 0x0001) {
+                      this.addRow('电机08缺相') 
+                      ErrTextTmp += '电机08缺相 '
+                      this.ErrorData.Error08 += '电机08缺相 '
+                    } else {
+                      this.deleteRow('电机08缺相');
+                    }
 
-    //   if (uint16MudbusData[5] != this.FluorineSystemErr2)
-    //   {
-    //     this.FluorineSystemErr2 = uint16MudbusData[5];
-    //     if (this.FluorineSystemErr2 & 0x0001) 
-    //     {
-    //       this.addRow('吸气温度传感器2故障')
-    //       ErrTextTmp += '吸气温度传感器2故障 ' 
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('吸气温度传感器2故障');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x0002) 
-    //     {
-    //       this.addRow('排气温度传感器2故障')
-    //       ErrTextTmp += '排气温度传感器2故障 ' 
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('排气温度传感器2故障');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x0004) 
-    //     {
-    //       this.addRow('冷凝温度传感器2故障')
-    //       ErrTextTmp += '冷凝温度传感器2故障 ' 
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('冷凝温度传感器2故障');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x0008) 
-    //     {
-    //       this.addRow('蒸发温度传感器2故障')
-    //       ErrTextTmp += '蒸发温度传感器2故障 ' 
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('蒸发温度传感器2故障');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x0010) 
-    //     {
-    //       this.addRow('液管温度传感器2故障')
-    //       ErrTextTmp += '液管温度传感器2故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('液管温度传感器2故障');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x0020) 
-    //     {
-    //       this.addRow('低压压力传感器2故障')
-    //       ErrTextTmp += '低压压力传感器2故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('低压压力传感器2故障');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x0040) 
-    //     {
-    //       this.addRow('高压压力传感器2故障')
-    //       ErrTextTmp += '高压压力传感器2故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('高压压力传感器2故障');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x0080) 
-    //     {
-    //       this.addRow('冷凝温度2过高告警')
-    //       ErrTextTmp += '冷凝温度2过高告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('冷凝温度2过高告警');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x0100) 
-    //     {
-    //       this.addRow('冷凝温度2过高锁定')
-    //       ErrTextTmp += '冷凝温度2过高锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('冷凝温度2过高锁定');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x0200) 
-    //     {
-    //       this.addRow('蒸发温度2过低告警')
-    //       ErrTextTmp += '蒸发温度2过低告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('蒸发温度2过低告警');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x0400) 
-    //     {
-    //       this.addRow('蒸发温度2过低锁定')
-    //       ErrTextTmp += '蒸发温度2过低锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('蒸发温度2过低锁定');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x0800) 
-    //     {
-    //       this.addRow('蒸发温度2过高告警')
-    //       ErrTextTmp += '蒸发温度2过高告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('蒸发温度2过高告警');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x1000) 
-    //     {
-    //       this.addRow('蒸发温度2过高锁定')
-    //       ErrTextTmp += '蒸发温度2过高锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('蒸发温度2过高锁定');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x2000) 
-    //     {
-    //       this.addRow('排气温度2过高告警')
-    //       ErrTextTmp += '排气温度2过高告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('排气温度2过高告警');
-    //     }
-    //     if (this.FluorineSystemErr2 & 0x4000) 
-    //     {
-    //       this.addRow('排气温度2过高锁定')
-    //       ErrTextTmp += '排气温度2过高锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('排气温度2过高锁定');
-    //     }
-    //   }
+                    if (this.Error08 & 0x0002) {
+                      this.addRow('电机08过流') 
+                      ErrTextTmp += '电机08过流 '
+                      this.ErrorData.Error08 += '电机08过流 '
+                    } else {
+                      this.deleteRow('电机08过流');
+                    }
 
-    //   if (uint16MudbusData[6] != this.FluorineDriverErr2)
-    //   {
-    //     this.FluorineDriverErr2 = uint16MudbusData[6];
-    //     if (this.FluorineDriverErr2 & 0x0004) 
-    //     {
-    //       this.addRow('高压开关2告警')
-    //       ErrTextTmp += '高压开关2告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('高压开关2告警');
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x0008) 
-    //     {
-    //       this.addRow('风机2驱动故障')
-    //       ErrTextTmp += '风机2驱动故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('风机2驱动故障');
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x0010) 
-    //     {
-    //       this.addRow('高压开关2故障')
-    //       ErrTextTmp += '高压开关2故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('高压开关2故障');
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x0020) 
-    //     {
-    //       this.addRow('高压开关2锁定')
-    //       ErrTextTmp += '高压开关2锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('高压开关2锁定');
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x0040) 
-    //     {
-    //       this.addRow('压缩机2通讯故障')
-    //       ErrTextTmp += '压缩机2通讯故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('压缩机2通讯故障');
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x0080) 
-    //     {
-    //       this.addRow('压缩机2AC电流过高告警')
-    //       ErrTextTmp += '压缩机2AC电流过高告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('压缩机2AC电流过高告警');
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x0100) 
-    //     {
-    //       this.addRow('压缩机2驱动故障告警' + this.DriverCode.CompressorDriverErrCode2)
-    //       ErrTextTmp += '压缩机2驱动故障告警 ' + this.DriverCode.CompressorDriverErrCode2 + ' '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('压缩机2驱动故障告警' + this.DriverCode.CompressorDriverErrCode2);
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x0200) 
-    //     {
-    //       this.addRow('压缩机2AC电流过高锁定')
-    //       ErrTextTmp += '压缩机2AC电流过高锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('压缩机2AC电流过高锁定');
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x0400) 
-    //     {
-    //       this.addRow('压缩机2驱动故障锁定')
-    //       ErrTextTmp += '压缩机2驱动故障锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('压缩机2驱动故障锁定');
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x0800) 
-    //     {
-    //       this.addRow('风机2通讯故障')
-    //       ErrTextTmp += '风机2通讯故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('风机2通讯故障');
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x1000) 
-    //     {
-    //       this.addRow('风机2AC电流过高告警')
-    //       ErrTextTmp += '风机2AC电流过高告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('风机2AC电流过高告警');
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x2000) 
-    //     {
-    //       this.addRow('风机2驱动故障告警' + this.DriverCode.FanDriverErrCode2)
-    //       ErrTextTmp += '风机2驱动故障告警 ' + this.DriverCode.FanDriverErrCode2 + ' '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('风机2驱动故障告警' + this.DriverCode.FanDriverErrCode2);
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x4000) 
-    //     {
-    //       this.addRow('风机2AC电流过高锁定')
-    //       ErrTextTmp += '风机2AC电流过高锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('风机2AC电流过高锁定');
-    //     }
-    //     if (this.FluorineDriverErr2 & 0x8000) 
-    //     {
-    //       this.addRow('风机2驱动故障锁定')
-    //       ErrTextTmp += '风机2驱动故障锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('风机2驱动故障锁定');
-    //     }
-    //   }
+                    if (this.Error08 & 0x0004) {
+                      this.addRow('电机08堵转') 
+                      ErrTextTmp += '电机08堵转 '
+                      this.ErrorData.Error08 += '电机08堵转 '
+                    } else {
+                      this.deleteRow('电机08堵转');
+                    }
 
-    //   if (uint16MudbusData[7] != this.WaterSystemErr)
-    //   {
-    //     this.WaterSystemErr = uint16MudbusData[7];
-    //     if (this.WaterSystemErr & 0x0001) 
-    //     {
-    //       this.addRow('水温过高告警')
-    //       ErrTextTmp += '水温过高告警 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('水温过高告警');
-    //     }
-    //     if (this.WaterSystemErr & 0x0002) 
-    //     {
-    //       this.addRow('水温过低告警')
-    //       ErrTextTmp += '水温过低告警 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('水温过低告警');
-    //     }
-    //     if (this.WaterSystemErr & 0x0004) 
-    //     {
-    //       this.addRow('环境温度传感器故障')
-    //       ErrTextTmp += '环境温度传感器故障 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('环境温度传感器故障');
-    //     }
-    //     if (this.WaterSystemErr & 0x0008) 
-    //     {
-    //       this.addRow('系统水温度传感器故障')
-    //       ErrTextTmp += '系统水温度传感器故障 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('系统水温度传感器故障');
-    //     }
-    //     if (this.WaterSystemErr & 0x0010) 
-    //     {
-    //       this.addRow('出水温度传感器故障')
-    //       ErrTextTmp += '出水温度传感器故障 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('出水温度传感器故障');
-    //     }
-    //     if (this.WaterSystemErr & 0x0020) 
-    //     {
-    //       this.addRow('进水温度传感器故障')
-    //       ErrTextTmp += '进水温度传感器故障 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('进水温度传感器故障');
-    //     }
-    //     if (this.WaterSystemErr & 0x0040) 
-    //     {
-    //       this.addRow('出水压力传感器故障')
-    //       ErrTextTmp += '出水压力传感器故障 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('出水压力传感器故障');
-    //     }
-    //     if (this.WaterSystemErr & 0x0080) 
-    //     {
-    //       this.addRow('进水压力传感器故障')
-    //       ErrTextTmp += '进水压力传感器故障 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('进水压力传感器故障');
-    //     }
-    //     if (this.WaterSystemErr & 0x0100) 
-    //     {
-    //       this.addRow('水泵压差高锁定')
-    //       ErrTextTmp += '水泵压差高锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('水泵压差高锁定');
-    //     } 
-    //     if (this.WaterSystemErr & 0x0200) 
-    //     {
-    //       this.addRow('水泵压差低锁定')
-    //       ErrTextTmp += '水泵压差低锁定 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('水泵压差低锁定');
-    //     }
-    //     if (this.WaterSystemErr & 0x0400) 
-    //     {
-    //       this.addRow('补水警告')
-    //       ErrTextTmp += '补水警告 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('补水警告');
-    //     }
-    //     if (this.WaterSystemErr & 0x0800) 
-    //     {
-    //       this.addRow('水流开关故障')
-    //       ErrTextTmp += '水流开关故障 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('水流开关故障');
-    //     }
-    //     if (this.WaterSystemErr & 0x1000) 
-    //     {
-    //       this.addRow('水流开关保护锁定')
-    //       ErrTextTmp += '水流开关保护锁定 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('水流开关保护锁定');
-    //     }
-    //     if (this.WaterSystemErr & 0x2000) 
-    //     {
-    //       this.addRow('水温差过大告警')
-    //       ErrTextTmp += '水温差过大告警 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('水温差过大告警');
-    //     }
-    //     if (this.WaterSystemErr & 0x4000) 
-    //     {
-    //       this.addRow('水泵压差高告警')
-    //       ErrTextTmp += '水泵压差高告警 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('水泵压差高告警');
-    //     }
-    //     if (this.WaterSystemErr & 0x8000) 
-    //     {
-    //       this.addRow('水泵压差低告警')
-    //       ErrTextTmp += '水泵压差低告警 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('水泵压差低告警');
-    //     }
-    //   }
+                    if (this.Error08 & 0x0008) {
+                      this.addRow('编码器08故障') 
+                      ErrTextTmp += '编码器08故障 '
+                      this.ErrorData.Error08 += '编码器08故障 '
+                    } else {
+                      this.deleteRow('编码器08故障');
+                    }
+                }
 
-    //   if (uint16MudbusData[8] != this.WaterDriverErr)
-    //   {
-    //     this.WaterDriverErr = uint16MudbusData[8];
-    //     if (this.WaterDriverErr & 0x0001) 
-    //     {
-    //       this.addRow('水泵通讯故障')
-    //       ErrTextTmp += '水泵通讯故障'
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('水泵通讯故障');
-    //     }
-    //     if (this.WaterDriverErr & 0x0002) 
-    //     {
-    //       this.addRow('水泵AC电流过高告警')
-    //       ErrTextTmp += '水泵AC电流过高告警'
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('水泵AC电流过高告警');
-    //     }
-    //     if (this.WaterDriverErr & 0x0004) 
-    //     {
-    //       this.addRow('水泵驱动故障告警' + this.DriverCode.PumpDriverErrCode)
-    //       ErrTextTmp += '水泵驱动故障告警' + this.DriverCode.PumpDriverErrCode + ' '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('水泵驱动故障告警' + this.DriverCode.PumpDriverErrCode);
-    //     }
-    //     if (this.WaterDriverErr & 0x0008) 
-    //     {
-    //       this.addRow('水泵AC电流过高锁定')
-    //       ErrTextTmp += '水泵AC电流过高锁定'
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('水泵AC电流过高锁定');
-    //     }
-    //     if (this.WaterDriverErr & 0x0010) 
-    //     {
-    //       this.addRow('水泵驱动故障锁定')
-    //       ErrTextTmp += '水泵驱动故障锁定'
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('水泵驱动故障锁定');
-    //     }
-    //     if (this.WaterDriverErr & 0x0020) 
-    //     {
-    //       this.addRow('水流开关保护告警')
-    //       ErrTextTmp += '水流开关保护告警'
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('水流开关保护告警');
-    //     }
-    //   }
+                if (uint16MudbusData[12] != this.Error09) {
+                    this.Error09 = uint16MudbusData[12];
+                    this.ErrorData.Error09 = '';
+                    if (this.Error09 & 0x0001) {
+                      this.addRow('电机09缺相') 
+                      ErrTextTmp += '电机09缺相 '
+                      this.ErrorData.Error09 += '电机09缺相 '
+                    } else {
+                      this.deleteRow('电机09缺相');
+                    }
 
-    //   if (uint16MudbusData[9] != this.SystemErr)
-    //   {
-    //     this.SystemErr = uint16MudbusData[9];
-    //     if(this.SystemErr & 0x0001) 
-    //     {
-    //       this.addRow('CAN通讯故障')
-    //       ErrTextTmp += 'CAN通讯故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('CAN通讯故障');
-    //     }
-    //     if(this.SystemErr & 0x0002) 
-    //     {
-    //       this.addRow('上位机通讯故障')
-    //       ErrTextTmp += '上位机通讯故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('上位机通讯故障');
-    //     }
-    //     if(this.SystemErr & 0x0004) 
-    //     {
-    //       this.addRow('显示器通讯故障')
-    //       ErrTextTmp += '显示器通讯故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('显示器通讯故障');
-    //     }
-    //     if(this.SystemErr & 0x0008) 
-    //     {
-    //       this.addRow('相序检测故障')
-    //       ErrTextTmp += '相序检测故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('相序检测故障');
-    //     }
-    //     if(this.SystemErr & 0x0010) 
-    //     {
-    //       this.addRow('交流电压告警')
-    //       ErrTextTmp += '交流电压告警 '
-    //     } 
-    //     else 
-    //     {
-    //       this.deleteRow('交流电压告警');
-    //     }
-    //     if(this.SystemErr & 0x0020) 
-    //     {
-    //       this.addRow('水浸开关锁定')
-    //       ErrTextTmp += '水浸开关锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('水浸开关锁定');
-    //     }
-    //     if(this.SystemErr & 0x0040) 
-    //     {
-    //       this.addRow('门禁开关锁定')
-    //       ErrTextTmp += '门禁开关锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('门禁开关锁定');
-    //     }
-    //     if(this.SystemErr & 0x0080) 
-    //     {
-    //       this.addRow('烟雾开关锁定')
-    //       ErrTextTmp += '烟雾开关锁定 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('烟雾开关锁定');
-    //     }
-    //     if(this.SystemErr & 0x0100) 
-    //     {
-    //       this.addRow('外接告警')
-    //       ErrTextTmp += '外接告警 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('外接告警');
-    //     }
-    //     if(this.SystemErr & 0x0200) 
-    //     {
-    //       this.addRow('散热风机故障')
-    //       ErrTextTmp += '散热风机故障 '
-    //     }
-    //     else 
-    //     {
-    //       this.deleteRow('散热风机故障');
-    //     }
-    //   }
+                    if (this.Error09 & 0x0002) {
+                      this.addRow('电机09过流') 
+                      ErrTextTmp += '电机09过流 '
+                      this.ErrorData.Error09 += '电机09过流 '
+                    } else {
+                      this.deleteRow('电机09过流');
+                    }
 
-    //   if (ErrTextTmp === '') 
-    //   {
-    //     ErrTextTmp = '系统正常运行';
-    //     this.infoTextContent = '系统正常运行';
-    //   } 
-    //   if ((this.infoTextContent !== ErrTextTmp) && ErrTextTmp!=='')
-    //   {
-    //     this.deleteRow('无故障');
-    //     this.infoTextContent = ErrTextTmp;
-    //     this.infoText += new Date().toLocaleString().substring(5) +'>>'+ ErrTextTmp + '\t\n';
-    //   }
+                    if (this.Error09 & 0x0004) {
+                      this.addRow('电机09堵转') 
+                      ErrTextTmp += '电机09堵转 '
+                      this.ErrorData.Error09 += '电机09堵转 '
+                    } else {
+                      this.deleteRow('电机09堵转');
+                    }
 
-      
+                    if (this.Error09 & 0x0008) {
+                      this.addRow('编码器09故障') 
+                      ErrTextTmp += '编码器09故障 '
+                      this.ErrorData.Error09 += '编码器09故障 '
+                    } else {
+                      this.deleteRow('编码器09故障');
+                    }
+                }
 
+                if (uint16MudbusData[13] != this.Error10) {
+                    this.Error10 = uint16MudbusData[13];
+                    this.ErrorData.Error10 = '';
+                    if (this.Error10 & 0x0001) {
+                      this.addRow('电机10缺相') 
+                      ErrTextTmp += '电机10缺相 '
+                      this.ErrorData.Error10 += '电机10缺相 '
+                    } else {
+                      this.deleteRow('电机10缺相');
+                    }
 
-//   })
+                    if (this.Error10 & 0x0002) {
+                      this.addRow('电机10过流') 
+                      ErrTextTmp += '电机10过流 '
+                      this.ErrorData.Error10 += '电机10过流 '
+                    } else {
+                      this.deleteRow('电机10过流');
+                    }
 
+                    if (this.Error10 & 0x0004) {
+                      this.addRow('电机10堵转') 
+                      ErrTextTmp += '电机10堵转 '
+                      this.ErrorData.Error10 += '电机10堵转 '
+                    } else {
+                      this.deleteRow('电机10堵转');
+                    }
+
+                    if (this.Error10 & 0x0008) {
+                      this.addRow('编码器10故障') 
+                      ErrTextTmp += '编码器10故障 '
+                      this.ErrorData.Error10 += '编码器10故障 '
+                    } else {
+                      this.deleteRow('编码器10故障');
+                    }
+                }
+
+                if (uint16MudbusData[14] != this.Error11) {
+                    this.Error11 = uint16MudbusData[14];
+                    this.ErrorData.Error11 = '';
+                    if (this.Error11 & 0x0001) {
+                      this.addRow('电机11缺相') 
+                      ErrTextTmp += '电机11缺相 '
+                      this.ErrorData.Error11 += '电机11缺相 '
+                    } else {
+                      this.deleteRow('电机11缺相');
+                    }
+
+                    if (this.Error11 & 0x0002) {
+                      this.addRow('电机11过流') 
+                      ErrTextTmp += '电机11过流 '
+                      this.ErrorData.Error11 += '电机11过流 '
+                    } else {
+                      this.deleteRow('电机11过流');
+                    }
+
+                    if (this.Error11 & 0x0004) {
+                      this.addRow('电机11堵转') 
+                      ErrTextTmp += '电机11堵转 '
+                      this.ErrorData.Error11 += '电机11堵转 '
+                    } else {
+                      this.deleteRow('电机11堵转');
+                    }
+
+                    if (this.Error11 & 0x0008) {
+                      this.addRow('编码器11故障') 
+                      ErrTextTmp += '编码器11故障 '
+                      this.ErrorData.Error11 += '编码器11故障 '
+                    } else {
+                      this.deleteRow('编码器11故障');
+                    }
+                }
+
+                if (uint16MudbusData[15] != this.Error12) {
+                    this.Error12 = uint16MudbusData[15];
+                    this.ErrorData.Error12 = '';
+                    if (this.Error12 & 0x0001) {
+                      this.addRow('电机12缺相') 
+                      ErrTextTmp += '电机12缺相 '
+                      this.ErrorData.Error12 += '电机12缺相 '
+                    } else {
+                      this.deleteRow('电机12缺相');
+                    }
+
+                    if (this.Error12 & 0x0002) {
+                      this.addRow('电机12过流') 
+                      ErrTextTmp += '电机12过流 '
+                      this.ErrorData.Error12 += '电机12过流 '
+                    } else {
+                      this.deleteRow('电机12过流');
+                    }
+
+                    if (this.Error12 & 0x0004) {
+                      this.addRow('电机12堵转') 
+                      ErrTextTmp += '电机12堵转 '
+                      this.ErrorData.Error12 += '电机12堵转 '
+                    } else {
+                      this.deleteRow('电机12堵转');
+                    }
+
+                    if (this.Error12 & 0x0008) {
+                      this.addRow('编码器12故障') 
+                      ErrTextTmp += '编码器12故障 '
+                      this.ErrorData.Error12 += '编码器12故障 '
+                    } else {
+                      this.deleteRow('编码器12故障');
+                    }
+                }
+
+                if (uint16MudbusData[16] != this.Error13) {
+                    this.Error13 = uint16MudbusData[16];
+                    this.ErrorData.Error13 = '';
+                    if (this.Error13 & 0x0001) {
+                      this.addRow('电机13缺相') 
+                      ErrTextTmp += '电机13缺相 '
+                      this.ErrorData.Error13 += '电机13缺相 '
+                    } else {
+                      this.deleteRow('电机13缺相');
+                    }
+
+                    if (this.Error13 & 0x0002) {
+                      this.addRow('电机13过流') 
+                      ErrTextTmp += '电机13过流 '
+                      this.ErrorData.Error13 += '电机13过流 '
+                    } else {
+                      this.deleteRow('电机13过流');
+                    }
+
+                    if (this.Error13 & 0x0004) {
+                      this.addRow('电机13堵转') 
+                      ErrTextTmp += '电机13堵转 '
+                      this.ErrorData.Error13 += '电机13堵转 '
+                    } else {
+                      this.deleteRow('电机13堵转');
+                    }
+
+                    if (this.Error13 & 0x0008) {
+                      this.addRow('编码器13故障') 
+                      ErrTextTmp += '编码器13故障 '
+                      this.ErrorData.Error13 += '编码器13故障 '
+                    } else {
+                      this.deleteRow('编码器13故障');
+                    }
+                }
+
+                if (uint16MudbusData[17] != this.Error14) {
+                    this.Error14 = uint16MudbusData[17];
+                    this.ErrorData.Error14 = '';
+                    if (this.Error14 & 0x0001) {
+                      this.addRow('电机14缺相') 
+                      ErrTextTmp += '电机14缺相 '
+                      this.ErrorData.Error14 += '电机14缺相 '
+                    } else {
+                      this.deleteRow('电机14缺相');
+                    }
+
+                    if (this.Error14 & 0x0002) {
+                      this.addRow('电机14过流') 
+                      ErrTextTmp += '电机14过流 '
+                      this.ErrorData.Error14 += '电机14过流 '
+                    } else {
+                      this.deleteRow('电机14过流');
+                    }
+
+                    if (this.Error14 & 0x0004) {
+                      this.addRow('电机14堵转') 
+                      ErrTextTmp += '电机14堵转 '
+                      this.ErrorData.Error14 += '电机14堵转 '
+                    } else {
+                      this.deleteRow('电机14堵转');
+                    }
+
+                    if (this.Error14 & 0x0008) {
+                      this.addRow('编码器14故障') 
+                      ErrTextTmp += '编码器14故障 '
+                      this.ErrorData.Error14 += '编码器14故障 '
+                    } else {
+                      this.deleteRow('编码器14故障');
+                    }
+                }
+
+                if (uint16MudbusData[18] != this.Error15) {
+                    this.Error15 = uint16MudbusData[18];
+                    this.ErrorData.Error15 = '';
+                    if (this.Error15 & 0x0001) {
+                      this.addRow('电机15缺相') 
+                      ErrTextTmp += '电机15缺相 '
+                      this.ErrorData.Error15 += '电机15缺相 '
+                    } else {
+                      this.deleteRow('电机15缺相');
+                    }
+
+                    if (this.Error15 & 0x0002) {
+                      this.addRow('电机15过流') 
+                      ErrTextTmp += '电机15过流 '
+                      this.ErrorData.Error15 += '电机15过流 '
+                    } else {
+                      this.deleteRow('电机15过流');
+                    }
+
+                    if (this.Error15 & 0x0004) {
+                      this.addRow('电机15堵转') 
+                      ErrTextTmp += '电机15堵转 '
+                      this.ErrorData.Error15 += '电机15堵转 '
+                    } else {
+                      this.deleteRow('电机15堵转');
+                    }
+
+                    if (this.Error15 & 0x0008) {
+                      this.addRow('编码器15故障') 
+                      ErrTextTmp += '编码器15故障 '
+                      this.ErrorData.Error15 += '编码器15故障 '
+                    } else {
+                      this.deleteRow('编码器15故障');
+                    }
+                }
+            }
+        }
+    })
   },
   beforeDestroy(){
    
