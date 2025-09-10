@@ -578,7 +578,7 @@ export class IPCSystemWin{
                             UartSendBuffer(this.sendMsgQueue.Dequeue(), 0);   
                         } else {
                             if (this.MessageCtrl.SetTimeoutNum === 0) {
-                                let cmdData0Buffer = [0x01, 0x04, 0x10, 0x03, 0x00, 0x5D];
+                                let cmdData0Buffer = [0x01, 0x04, 0x10, 0x01, 0x00, 0x5F];
                                 let crc160 = crc.crc16(cmdData0Buffer, 0xFFFF);
                                 let cmdUart0SendBuffer = cmdData0Buffer.concat((crc160 & 0xff)).concat(((crc160 & 0xff00) >> 8));
                                 UartSendBuffer(cmdUart0SendBuffer, 0);           

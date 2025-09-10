@@ -29,30 +29,37 @@
         </div>
       </el-col>
 
-      <el-col :span="4">
+      <el-col :span="3">
         <div class="progress-box" >
-          <el-button type="text" style="font-weight:600; width:120px; margin-right:3px;">程序版本:</el-button>
-          <el-input size="mini" v-model="HeaderData.Version" readonly/>
+          <el-button type="text" style="font-weight:600; width:120px; margin-left:10px; margin-right:3px;">主控程序版本:</el-button>
+          <el-input size="mini" v-model="HeaderData.MainVersion" readonly/>
         </div>
       </el-col>
 
-      <el-col :span="4">
+      <el-col :span="3">
         <div class="progress-box" >
-          <el-button type="text" style="font-weight:600; width:200px; margin-right:3px;">参数校验和:</el-button>
-          <el-input size="mini" v-model="HeaderData.EEPROMCheck" readonly/>
+          <el-button type="text" style="font-weight:600; width:200px; margin-right:3px;">驱动程序版本:</el-button>
+          <el-input size="mini" v-model="HeaderData.DriverVersion" readonly/>
         </div>
       </el-col>  
 
-      <el-col :span="4">
+      <el-col :span="3">
         <div class="progress-box" >
-          <el-button type="text" style="font-weight:600; width:200px; margin-right:3px;">CRC32校验和:</el-button>
-          <el-input size="mini"  v-model="HeaderData.CRC32" readonly/>
+          <el-button type="text" style="font-weight:600; width:200px; margin-right:3px;">硬件版本号:</el-button>
+          <el-input size="mini"  v-model="HeaderData.HardwareVer" readonly/>
+        </div>
+      </el-col> 
+
+       <el-col :span="3">
+        <div class="progress-box" >
+          <el-button type="text" style="font-weight:600; width:200px; margin-right:3px;">左右手:</el-button>
+          <el-input size="mini"  v-model="HeaderData.HandType" readonly/>
         </div>
       </el-col> 
 
       <el-col :span="5">
         <el-switch 
-          style="margin-left:15px; margin-top:4px; display: block; "
+          style="margin-left:35px; margin-top:4px; display: block; "
           v-model="lang"
           active-color="#13ce66"
           inactive-color="#409EFF"
@@ -62,9 +69,9 @@
         </el-switch>
       </el-col> 
 
-      <el-col :span="1"  style="margin-top:5px;">
-        Ver 1.0
-      </el-col> 
+      <el-col :span="1">
+        <div style="margin-top:4px;"> Ver:1.0</div>
+      </el-col>
     </el-row> 
   </div>
 </template>
@@ -101,9 +108,10 @@ export default {
   data() {
     return {
       HeaderData: {
-        Version: '',
-        EEPROMCheck: '',
-        CRC32: ''
+        MainVersion: '',
+        DriverVersion: '',
+        HardwareVer: '',
+        HandType: ''
       },
       currentStatue: false,
       csbStatue: 'close',
@@ -146,23 +154,30 @@ export default {
     
 
     //Serial Data 
-//     ipcRenderer.on(APP_REPORT_UART_DATA, (event, arg) => {
-//       let uint8ModbusData = [], uint16MudbusData = [];
+    ipcRenderer.on(APP_REPORT_UART_DATA, (event, arg) => {
+      let uint8ModbusData = [], uint16MudbusData = [];
 
-//       uint8ModbusData = arg.slice(0, arg.length - 2);
-//       uint8ModbusData = uint8ModbusData.slice(3);
+      uint8ModbusData = arg.slice(0, arg.length - 2);
+      uint8ModbusData = uint8ModbusData.slice(3);
 
-//       for (let i = 0; i < (arg[2]/2); i++) {
-//         uint16MudbusData[i] = ((uint8ModbusData[i*2] << 8) | (uint8ModbusData[i*2 + 1]))
-//       }
-      
+      for (let i = 0; i < (arg[2]/2); i++) {
+        uint16MudbusData[i] = ((uint8ModbusData[i*2] << 8) | (uint8ModbusData[i*2 + 1]))
+      }
 
-//       this.HeaderData.Version = "SWBP"  + addPreZero((uint16MudbusData[104-20]>>8)) + "V" + addPreZero((uint16MudbusData[104-20] & 0xFF))
-//       this.HeaderData.CRC32 = "0X"+CRC32(uint16MudbusData[110-20]) + CRC32(uint16MudbusData[111-20]);
-//       this.HeaderData.EEPROMCheck = '---'
+      if (arg[2] === (0x5F * 2)) {
+        this.HeaderData.HardwareVer = '0x' + uint16MudbusData[0].toString(16).toUpperCase().padStart(2, '0');
+        this.HeaderData.MainVersion = '0x' + uint16MudbusData[1].toString(16).toUpperCase().padStart(2, '0');
+      } else if (arg[2] === (0x30 * 2)) {
+        this.HeaderData.DriverVersion = '0x' + uint16MudbusData[0x1061-0x1060].toString(16).toUpperCase().padStart(2, '0');
 
-    
-//   })
+        if (uint16MudbusData[0x1060-0x1060] === 0) {
+            this.HeaderData.HandType = '右手' 
+        } else if (uint16MudbusData[0x1060-0x1060] === 1) {
+            this.HeaderData.HandType = '左手'
+        }
+        
+      }
+  })
 
       //程序版本号
       function addPreZero(NumberSource){

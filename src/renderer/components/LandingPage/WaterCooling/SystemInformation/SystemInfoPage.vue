@@ -1000,7 +1000,7 @@ export default {
         for (let i = 0; i < (arg[2]/2); i++) {
             uint16MudbusData[i] = ((uint8ModbusData[i*2] << 8) | (uint8ModbusData[i*2 + 1]))
           
-            if ((i >= (0x1014-0x1003) && i <= (0x1031-0x1003)) || (i >= (0x1042-0x1003) && i <= (0x105F-0x1003))) {
+            if ((i >= (0x1014-0x1001) && i <= (0x1031-0x1001)) || (i >= (0x1042-0x1001) && i <= (0x105F-0x1001))) {
                 int16MudbusData[i] = uint16MudbusData[i];
             } else{
                 if(uint16MudbusData[i] & 0x8000) {
@@ -1014,9 +1014,9 @@ export default {
 
         if (arg[1] === 0x04) {
 
-            if (arg[2] === (0x5D * 2)) {
-                this.OtherData.VBus = (uint16MudbusData[0] / 100).toString() + ' V';
-                if (uint16MudbusData[1] === 0) {
+            if (arg[2] === (0x5F * 2)) {
+                this.OtherData.VBus = (uint16MudbusData[0x1003-0x1001] / 100).toString() + ' V';
+                if (uint16MudbusData[0x1004-0x1001] === 0) {
                     this.OtherData.MainError = '无故障';
                 } else if (uint16MudbusData[1] === 1) {
                     this.OtherData.MainError = '电压过低';
@@ -1026,171 +1026,171 @@ export default {
                     this.OtherData.MotorCtrl = '温度过高';
                 }
 
-                if (uint16MudbusData[2] === 0) {
+                if (uint16MudbusData[4] === 0) {
                     this.MotorData.Error01 = '无故障';
-                } else if (uint16MudbusData[2] === 1) {
+                } else if (uint16MudbusData[4] === 1) {
                     this.MotorData.Error01 = '电机缺相';
-                } else if (uint16MudbusData[2] === 2) {
+                } else if (uint16MudbusData[4] === 2) {
                     this.MotorData.Error01 = '电机过流';
-                } else if (uint16MudbusData[2] === 4) {
+                } else if (uint16MudbusData[4] === 4) {
                     this.MotorData.Error01 = '电机堵转';
-                } else if (uint16MudbusData[2] === 8) {
+                } else if (uint16MudbusData[4] === 8) {
                     this.MotorData.Error01 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[3] === 0) {
+                if (uint16MudbusData[5] === 0) {
                     this.MotorData.Error02 = '无故障';
-                } else if (uint16MudbusData[3] === 1) {
+                } else if (uint16MudbusData[5] === 1) {
                     this.MotorData.Error02 = '电机缺相';
-                } else if (uint16MudbusData[3] === 2) {
+                } else if (uint16MudbusData[5] === 2) {
                     this.MotorData.Error02 = '电机过流';
-                } else if (uint16MudbusData[3] === 4) {
+                } else if (uint16MudbusData[5] === 4) {
                     this.MotorData.Error02 = '电机堵转';
-                } else if (uint16MudbusData[3] === 8) {
+                } else if (uint16MudbusData[5] === 8) {
                     this.MotorData.Error02 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[4] === 0) {
+                if (uint16MudbusData[6] === 0) {
                     this.MotorData.Error03 = '无故障';
-                } else if (uint16MudbusData[4] === 1) {
+                } else if (uint16MudbusData[6] === 1) {
                     this.MotorData.Error03 = '电机缺相';
-                } else if (uint16MudbusData[4] === 2) {
+                } else if (uint16MudbusData[6] === 2) {
                     this.MotorData.Error03 = '电机过流';
-                } else if (uint16MudbusData[4] === 4) {
+                } else if (uint16MudbusData[6] === 4) {
                     this.MotorData.Error03 = '电机堵转';
-                } else if (uint16MudbusData[4] === 8) {
+                } else if (uint16MudbusData[6] === 8) {
                     this.MotorData.Error03 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[5] === 0) {
+                if (uint16MudbusData[7] === 0) {
                     this.MotorData.Error04 = '无故障';
-                } else if (uint16MudbusData[5] === 1) {
+                } else if (uint16MudbusData[7] === 1) {
                     this.MotorData.Error04 = '电机缺相';
-                } else if (uint16MudbusData[5] === 2) {
+                } else if (uint16MudbusData[7] === 2) {
                     this.MotorData.Error04 = '电机过流';
-                } else if (uint16MudbusData[5] === 4) {
+                } else if (uint16MudbusData[7] === 4) {
                     this.MotorData.Error04 = '电机堵转';
-                } else if (uint16MudbusData[5] === 8) {
+                } else if (uint16MudbusData[7] === 8) {
                     this.MotorData.Error04 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[6] === 0) {
+                if (uint16MudbusData[8] === 0) {
                     this.MotorData.Error05 = '无故障';
-                } else if (uint16MudbusData[6] === 1) {
+                } else if (uint16MudbusData[8] === 1) {
                     this.MotorData.Error05 = '电机缺相';
-                } else if (uint16MudbusData[6] === 2) {
+                } else if (uint16MudbusData[8] === 2) {
                     this.MotorData.Error05 = '电机过流';
-                } else if (uint16MudbusData[6] === 4) {
+                } else if (uint16MudbusData[8] === 4) {
                     this.MotorData.Error05 = '电机堵转';
-                } else if (uint16MudbusData[6] === 8) {
+                } else if (uint16MudbusData[8] === 8) {
                     this.MotorData.Error05 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[7] === 0) {
+                if (uint16MudbusData[9] === 0) {
                     this.MotorData.Error06 = '无故障';
-                } else if (uint16MudbusData[7] === 1) {
+                } else if (uint16MudbusData[9] === 1) {
                     this.MotorData.Error06 = '电机缺相';
-                } else if (uint16MudbusData[7] === 2) {
+                } else if (uint16MudbusData[9] === 2) {
                     this.MotorData.Error06 = '电机过流';
-                } else if (uint16MudbusData[7] === 4) {
+                } else if (uint16MudbusData[9] === 4) {
                     this.MotorData.Error06 = '电机堵转';
-                } else if (uint16MudbusData[7] === 8) {
+                } else if (uint16MudbusData[9] === 8) {
                     this.MotorData.Error06 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[8] === 0) {
+                if (uint16MudbusData[10] === 0) {
                     this.MotorData.Error07 = '无故障';
-                } else if (uint16MudbusData[8] === 1) {
+                } else if (uint16MudbusData[10] === 1) {
                     this.MotorData.Error07 = '电机缺相';
-                } else if (uint16MudbusData[8] === 2) {
+                } else if (uint16MudbusData[10] === 2) {
                     this.MotorData.Error07 = '电机过流';
-                } else if (uint16MudbusData[8] === 4) {
+                } else if (uint16MudbusData[10] === 4) {
                     this.MotorData.Error07 = '电机堵转';
-                } else if (uint16MudbusData[8] === 8) {
+                } else if (uint16MudbusData[10] === 8) {
                     this.MotorData.Error07 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[9] === 0) {
+                if (uint16MudbusData[11] === 0) {
                     this.MotorData.Error08 = '无故障';
-                } else if (uint16MudbusData[9] === 1) {
+                } else if (uint16MudbusData[11] === 1) {
                     this.MotorData.Error08 = '电机缺相';
-                } else if (uint16MudbusData[9] === 2) {
+                } else if (uint16MudbusData[11] === 2) {
                     this.MotorData.Error08 = '电机过流';
-                } else if (uint16MudbusData[9] === 4) {
+                } else if (uint16MudbusData[11] === 4) {
                     this.MotorData.Error08 = '电机堵转';
-                } else if (uint16MudbusData[9] === 8) {
+                } else if (uint16MudbusData[11] === 8) {
                     this.MotorData.Error08 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[10] === 0) {
+                if (uint16MudbusData[12] === 0) {
                     this.MotorData.Error09 = '无故障';
-                } else if (uint16MudbusData[10] === 1) {
+                } else if (uint16MudbusData[12] === 1) {
                     this.MotorData.Error09 = '电机缺相';
-                } else if (uint16MudbusData[10] === 2) {
+                } else if (uint16MudbusData[12] === 2) {
                     this.MotorData.Error09 = '电机过流';
-                } else if (uint16MudbusData[10] === 4) {
+                } else if (uint16MudbusData[12] === 4) {
                     this.MotorData.Error09 = '电机堵转';
-                } else if (uint16MudbusData[10] === 8) {
+                } else if (uint16MudbusData[12] === 8) {
                     this.MotorData.Error09 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[11] === 0) {
+                if (uint16MudbusData[13] === 0) {
                     this.MotorData.Error10 = '无故障';
-                } else if (uint16MudbusData[11] === 1) {
+                } else if (uint16MudbusData[13] === 1) {
                     this.MotorData.Error10 = '电机缺相';
-                } else if (uint16MudbusData[11] === 2) {
+                } else if (uint16MudbusData[13] === 2) {
                     this.MotorData.Error10 = '电机过流';
-                } else if (uint16MudbusData[11] === 4) {
+                } else if (uint16MudbusData[13] === 4) {
                     this.MotorData.Error10 = '电机堵转';
-                } else if (uint16MudbusData[11] === 8) {
+                } else if (uint16MudbusData[13] === 8) {
                     this.MotorData.Error10 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[12] === 0) {
+                if (uint16MudbusData[14] === 0) {
                     this.MotorData.Error11 = '无故障';
-                } else if (uint16MudbusData[12] === 1) {
+                } else if (uint16MudbusData[14] === 1) {
                     this.MotorData.Error11 = '电机缺相';
-                } else if (uint16MudbusData[12] === 2) {
+                } else if (uint16MudbusData[14] === 2) {
                     this.MotorData.Error11 = '电机过流';
-                } else if (uint16MudbusData[12] === 4) {
+                } else if (uint16MudbusData[14] === 4) {
                     this.MotorData.Error11 = '电机堵转';
-                } else if (uint16MudbusData[12] === 8) {
+                } else if (uint16MudbusData[14] === 8) {
                     this.MotorData.Error11 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[13] === 0) {
+                if (uint16MudbusData[15] === 0) {
                     this.MotorData.Error12 = '无故障';
-                } else if (uint16MudbusData[13] === 1) {
+                } else if (uint16MudbusData[15] === 1) {
                     this.MotorData.Error12 = '电机缺相';
-                } else if (uint16MudbusData[13] === 2) {
+                } else if (uint16MudbusData[15] === 2) {
                     this.MotorData.Error12 = '电机过流';
-                } else if (uint16MudbusData[13] === 4) {
+                } else if (uint16MudbusData[15] === 4) {
                     this.MotorData.Error12 = '电机堵转';
-                } else if (uint16MudbusData[13] === 8) {
+                } else if (uint16MudbusData[15] === 8) {
                     this.MotorData.Error12 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[14] === 0) {
+                if (uint16MudbusData[16] === 0) {
                     this.MotorData.Error13 = '无故障';
-                } else if (uint16MudbusData[14] === 1) {
+                } else if (uint16MudbusData[16] === 1) {
                     this.MotorData.Error13 = '电机缺相';
-                } else if (uint16MudbusData[14] === 2) {
+                } else if (uint16MudbusData[16] === 2) {
                     this.MotorData.Error13 = '电机过流';
-                } else if (uint16MudbusData[14] === 4) {
+                } else if (uint16MudbusData[16] === 4) {
                     this.MotorData.Error13 = '电机堵转';
-                } else if (uint16MudbusData[14] === 8) {
+                } else if (uint16MudbusData[16] === 8) {
                     this.MotorData.Error13 = '编码器通讯异常';
                 }
 
-                if (uint16MudbusData[15] === 0) {
+                if (uint16MudbusData[16] === 0) {
                     this.MotorData.Error14 = '无故障';
-                } else if (uint16MudbusData[15] === 1) {
+                } else if (uint16MudbusData[16] === 1) {
                     this.MotorData.Error14 = '电机缺相';
-                } else if (uint16MudbusData[15] === 2) {
+                } else if (uint16MudbusData[16] === 2) {
                     this.MotorData.Error14 = '电机过流';
-                } else if (uint16MudbusData[15] === 4) {
+                } else if (uint16MudbusData[16] === 4) {
                     this.MotorData.Error14 = '电机堵转';
-                } else if (uint16MudbusData[15] === 8) {
+                } else if (uint16MudbusData[16] === 8) {
                     this.MotorData.Error14 = '编码器通讯异常';
                 }
 
@@ -1206,68 +1206,68 @@ export default {
                     this.MotorData.Error15 = '编码器通讯异常';
                 }
 
-                this.MotorData.Current01 = (int16MudbusData[0x1032-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current02 = (int16MudbusData[0x1033-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current03 = (int16MudbusData[0x1034-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current04 = (int16MudbusData[0x1035-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current05 = (int16MudbusData[0x1036-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current06 = (int16MudbusData[0x1037-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current07 = (int16MudbusData[0x1038-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current08 = (int16MudbusData[0x1039-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current09 = (int16MudbusData[0x103A-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current10 = (int16MudbusData[0x103B-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current11 = (int16MudbusData[0x103C-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current12 = (int16MudbusData[0x103D-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current13 = (int16MudbusData[0x103E-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current14 = (int16MudbusData[0x103F-0x1003] / 100).toString() + ' A';
-                this.MotorData.Current15 = (int16MudbusData[0x1040-0x1003] / 100).toString() + ' A';
+                this.MotorData.Current01 = (int16MudbusData[0x1032-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current02 = (int16MudbusData[0x1033-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current03 = (int16MudbusData[0x1034-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current04 = (int16MudbusData[0x1035-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current05 = (int16MudbusData[0x1036-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current06 = (int16MudbusData[0x1037-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current07 = (int16MudbusData[0x1038-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current08 = (int16MudbusData[0x1039-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current09 = (int16MudbusData[0x103A-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current10 = (int16MudbusData[0x103B-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current11 = (int16MudbusData[0x103C-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current12 = (int16MudbusData[0x103D-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current13 = (int16MudbusData[0x103E-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current14 = (int16MudbusData[0x103F-0x1001] / 100).toString() + ' A';
+                this.MotorData.Current15 = (int16MudbusData[0x1040-0x1001] / 100).toString() + ' A';
 
-                uint32MudbusData = (uint16MudbusData[0x1014-0x1003] << 16) | uint16MudbusData[0x1015-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1014-0x1001] << 16) | uint16MudbusData[0x1015-0x1001];
                 this.MotorData.Location01 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x1016-0x1003] << 16) | uint16MudbusData[0x1017-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1016-0x1001] << 16) | uint16MudbusData[0x1017-0x1001];
                 this.MotorData.Location02 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x1018-0x1003] << 16) | uint16MudbusData[0x1019-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1018-0x1001] << 16) | uint16MudbusData[0x1019-0x1001];
                 this.MotorData.Location03 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x101A-0x1003] << 16) | uint16MudbusData[0x101B-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x101A-0x1001] << 16) | uint16MudbusData[0x101B-0x1001];
                 this.MotorData.Location04 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x101C-0x1003] << 16) | uint16MudbusData[0x101D-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x101C-0x1001] << 16) | uint16MudbusData[0x101D-0x1001];
                 this.MotorData.Location05 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x101E-0x1003] << 16) | uint16MudbusData[0x101F-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x101E-0x1001] << 16) | uint16MudbusData[0x101F-0x1001];
                 this.MotorData.Location06 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x1020-0x1003] << 16) | uint16MudbusData[0x1021-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1020-0x1001] << 16) | uint16MudbusData[0x1021-0x1001];
                 this.MotorData.Location07 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x1022-0x1003] << 16) | uint16MudbusData[0x1023-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1022-0x1001] << 16) | uint16MudbusData[0x1023-0x1001];
                 this.MotorData.Location08 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x1024-0x1003] << 16) | uint16MudbusData[0x1025-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1024-0x1001] << 16) | uint16MudbusData[0x1025-0x1001];
                 this.MotorData.Location09 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x1026-0x1003] << 16) | uint16MudbusData[0x1027-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1026-0x1001] << 16) | uint16MudbusData[0x1027-0x1001];
                 this.MotorData.Location10 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x1028-0x1003] << 16) | uint16MudbusData[0x1029-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1028-0x1001] << 16) | uint16MudbusData[0x1029-0x1001];
                 this.MotorData.Location11 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x102A-0x1003] << 16) | uint16MudbusData[0x102B-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x102A-0x1001] << 16) | uint16MudbusData[0x102B-0x1001];
                 this.MotorData.Location12 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x102C-0x1003] << 16) | uint16MudbusData[0x102D-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x102C-0x1001] << 16) | uint16MudbusData[0x102D-0x1001];
                 this.MotorData.Location13 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x102E-0x1003] << 16) | uint16MudbusData[0x102F-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x102E-0x1001] << 16) | uint16MudbusData[0x102F-0x1001];
                 this.MotorData.Location14 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x1030-0x1003] << 16) | uint16MudbusData[0x1031-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1030-0x1001] << 16) | uint16MudbusData[0x1031-0x1001];
                 this.MotorData.Location15 = uint32MudbusData.toString() ;
 
-                uint32MudbusData = (uint16MudbusData[0x1042-0x1003] << 16) | uint16MudbusData[0x1043-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1042-0x1001] << 16) | uint16MudbusData[0x1043-0x1001];
                 this.MotorData.JointData01 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos01 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1275,7 +1275,7 @@ export default {
                     this.SystemData.JointPos01 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x1044-0x1003] << 16) | uint16MudbusData[0x1045-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1044-0x1001] << 16) | uint16MudbusData[0x1045-0x1001];
                 this.MotorData.JointData02 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos02 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1283,7 +1283,7 @@ export default {
                     this.SystemData.JointPos02 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x1046-0x1003] << 16) | uint16MudbusData[0x1047-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1046-0x1001] << 16) | uint16MudbusData[0x1047-0x1001];
                 this.MotorData.JointData03 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos03 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1291,7 +1291,7 @@ export default {
                     this.SystemData.JointPos03 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x1048-0x1003] << 16) | uint16MudbusData[0x1049-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1048-0x1001] << 16) | uint16MudbusData[0x1049-0x1001];
                 this.MotorData.JointData04 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos04 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1299,7 +1299,7 @@ export default {
                     this.SystemData.JointPos04 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x104A-0x1003] << 16) | uint16MudbusData[0x104B-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x104A-0x1001] << 16) | uint16MudbusData[0x104B-0x1001];
                 this.MotorData.JointData05 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos05 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1307,7 +1307,7 @@ export default {
                     this.SystemData.JointPos05 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x104C-0x1003] << 16) | uint16MudbusData[0x104D-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x104C-0x1001] << 16) | uint16MudbusData[0x104D-0x1001];
                 this.MotorData.JointData06 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos06 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1315,7 +1315,7 @@ export default {
                     this.SystemData.JointPos06 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x104E-0x1003] << 16) | uint16MudbusData[0x104F-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x104E-0x1001] << 16) | uint16MudbusData[0x104F-0x1001];
                 this.MotorData.JointData07 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos07 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1323,7 +1323,7 @@ export default {
                     this.SystemData.JointPos07 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x1050-0x1003] << 16) | uint16MudbusData[0x1051-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1050-0x1001] << 16) | uint16MudbusData[0x1051-0x1001];
                 this.MotorData.JointData08 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos08 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1331,7 +1331,7 @@ export default {
                     this.SystemData.JointPos08 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x1052-0x1003] << 16) | uint16MudbusData[0x1053-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1052-0x1001] << 16) | uint16MudbusData[0x1053-0x1001];
                 this.MotorData.JointData09 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos09 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1339,7 +1339,7 @@ export default {
                     this.SystemData.JointPos09 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x1054-0x1003] << 16) | uint16MudbusData[0x1055-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1054-0x1001] << 16) | uint16MudbusData[0x1055-0x1001];
                 this.MotorData.JointData10 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos10 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1347,7 +1347,7 @@ export default {
                     this.SystemData.JointPos10 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x1056-0x1003] << 16) | uint16MudbusData[0x1057-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1056-0x1001] << 16) | uint16MudbusData[0x1057-0x1001];
                 this.MotorData.JointData11 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos11 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1355,7 +1355,7 @@ export default {
                     this.SystemData.JointPos11 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x1058-0x1003] << 16) | uint16MudbusData[0x1059-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x1058-0x1001] << 16) | uint16MudbusData[0x1059-0x1001];
                 this.MotorData.JointData12 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos12 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1363,7 +1363,7 @@ export default {
                     this.SystemData.JointPos12 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x105A-0x1003] << 16) | uint16MudbusData[0x105B-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x105A-0x1001] << 16) | uint16MudbusData[0x105B-0x1001];
                 this.MotorData.JointData13 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos13 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1371,7 +1371,7 @@ export default {
                     this.SystemData.JointPos13 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x105C-0x1003] << 16) | uint16MudbusData[0x105D-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x105C-0x1001] << 16) | uint16MudbusData[0x105D-0x1001];
                 this.MotorData.JointData14 = uint32MudbusData.toString();
                 if (this.JointType === 1) {
                     this.SystemData.JointPos14 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1379,7 +1379,7 @@ export default {
                     this.SystemData.JointPos14 = uint32MudbusData.toString();;
                 }
 
-                uint32MudbusData = (uint16MudbusData[0x105E-0x1003] << 16) | uint16MudbusData[0x105F-0x1003];
+                uint32MudbusData = (uint16MudbusData[0x105E-0x1001] << 16) | uint16MudbusData[0x105F-0x1001];
                 this.MotorData.JointData15 = uint32MudbusData.toString(); 
                 if (this.JointType === 1) {
                     this.SystemData.JointPos15 = ((uint32MudbusData - 32768) * 360 / 65536).toFixed(2) + '°';
@@ -1436,13 +1436,13 @@ export default {
                 uint32MudbusData = (uint16MudbusData[0x108D-0x1060] << 16) | uint16MudbusData[0x108E-0x1060];
                 this.OtherData.CloseValue5 = uint32MudbusData.toString(); 
 
-                // if (uint16MudbusData[0x108F-0x1003] === 0xFFFF)
+                // if (uint16MudbusData[0x108F-0x1001] === 0xFFFF)
                 // {
                 //     this.OtherData.ResetFlag = '复位完成';
                 // }
                 // else 
                 // {
-                //     this.OtherData.ResetFlag = '复位中 >>' + uint16MudbusData[0x108F-0x1003].toString();
+                //     this.OtherData.ResetFlag = '复位中 >>' + uint16MudbusData[0x108F-0x1001].toString();
                 // }
 
                 const resetFlag = uint16MudbusData[0x108F-0x1060];
