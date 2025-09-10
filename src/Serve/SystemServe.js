@@ -233,7 +233,17 @@ export class IPCSystemWin{
             let crc16Data;
             let cmdUartSendBuffer;
             if (args.CmdType === 'JointResetCmd') {
-                console.log('JointResetCmd');
+                //console.log('JointResetCmd');
+                tmpBuffer[0] = 0x01;
+                tmpBuffer[1] = 0x06;
+                tmpBuffer[2] = 0x00;
+                tmpBuffer[3] = 0xD9;
+                tmpBuffer[4] = 0;
+                tmpBuffer[5] = 1;
+                crc16Data = crc.crc16(tmpBuffer, 0xFFFF);
+                cmdUartSendBuffer = tmpBuffer.concat((crc16Data & 0xff)).concat(((crc16Data & 0xff00) >> 8));
+                this.sendMsgQueue.Enqueue(cmdUartSendBuffer);
+                this.MessageCtrl.op_type = 'write_0x06_cmd';
             } else if (args.CmdType === 'ModeSwitchCmd') {
                 tmpBuffer[0] = 0x01;
                 tmpBuffer[1] = 0x06;
