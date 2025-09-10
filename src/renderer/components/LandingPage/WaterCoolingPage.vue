@@ -1,13 +1,13 @@
 <template>
   <div class="conter" >  
-  <fieldset  style="height: 850px">
+  <fieldset>
     <el-container style="height: 100%;" class="my-main">
       <el-header height=80%; width=100%;  class="my-main">
        <fieldset style="background-color:#C0C4CC; border-color: white; height: 58px;"> 
           <DriverInfoPage></DriverInfoPage>
        </fieldset> 
       </el-header>
-      <div class="line"></div>
+      <!-- <div class="line"></div> -->
       <el-container>
         <el-aside  class= "my-main" tyle="width: 23%; height: 100%;">
             <WarningPage></WarningPage>
@@ -163,7 +163,6 @@ export default {
   text-align: left !important;
   
   padding-top: 2px !important;
-  padding-bottom: 7px !important;
   padding-right: 2px !important;
   padding-left: 2px !important;
 

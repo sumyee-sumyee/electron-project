@@ -3,7 +3,7 @@
     <fieldset  style="border-color: white; height: 825px;">
     <legend style="font:8px; font-weight:800;">数据日志</legend>    
     
-    <el-carousel height="770px" indicator-position="outside" :autoplay="false" >
+    <el-carousel height="770px" indicator-position="outside" :autoplay="false" style="margin-top: 10px;">
       <el-carousel-item >
         <el-table
         :data="CurrentWarning" 
