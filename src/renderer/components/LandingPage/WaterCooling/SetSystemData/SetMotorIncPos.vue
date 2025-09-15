@@ -106,21 +106,17 @@
       <el-col :span="2"><el-button type="text" style="margin-right:3px;"></el-button ></el-col>
     </el-row>
 
-    <el-row  style="margin-top:4px; " type="flex" justify="center">
-      <el-col :span="9" style="min-height:1px;">
+    <el-row  style="margin-top:10px; margin-left:15px; margin-right:15px;">
+     <el-col :span="10" style="min-height:1px;">
         <div></div>
       </el-col>
-      <el-col :span="6">
-        <el-button style="width:80% " 
-          type="primary" plain size="mini" 
-          @click="sendMotorIncPosMsg">  
-          发送手动参数
-        </el-button> 
-      </el-col>
-      <el-col :span="8" style="min-height:1px;">
+      <el-col :span="8" >
+        <el-button size="mini" @click="sendMotorIncPosMsg">发送电机增量位置数据</el-button>
+      </el-col> 
+      <el-col :span="6" style="min-height:1px;">
         <div></div>
       </el-col>
-    </el-row> 
+    </el-row>   
   </div>  
 </template>
 
