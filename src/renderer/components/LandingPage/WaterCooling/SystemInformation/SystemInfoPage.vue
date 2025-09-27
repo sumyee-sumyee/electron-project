@@ -159,7 +159,7 @@
               </el-col>
             </el-row>
 
-            <el-row  style=" margin-left:15px; margin-right:15px;">
+            <el-row  style=" margin-left:15px; margin-right:15px; margin-bottom:10px;">
               <el-col :span="4">
                 <div class="progress-box" >
                   <el-button type="text" size="small" style="width:170px; margin-right:3px;">关节13设定</el-button>
@@ -200,7 +200,7 @@
         </fieldset>
       </div>
 
-      <div style="margin-top: 5px;">
+      <div style="margin-top: 2px;">
         <fieldset style="background-color:#EBEEF5; border-color: white;"> 
           <legend style="font:8px; font-weight:800;  margin-left:15px; margin-right:15px; margin-bottom:10px;">电机信息</legend> 
             <el-row  style=" margin-left:15px; margin-right:15px;">
@@ -556,7 +556,7 @@
               </el-col>
             </el-row>
 
-            <el-row  style=" margin-left:15px; margin-right:15px;">
+            <el-row  style=" margin-left:15px; margin-right:15px; margin-bottom:10px;">
               <el-col :span="4">
                 <div class="progress-box" >
                   <el-button type="text" size="small" style="width:170px; margin-right:3px;">电机13位置</el-button>
@@ -597,7 +597,7 @@
           </fieldset>
       </div>
 
-      <div style="margin-top: 5px;">
+      <div style="margin-top: 2px;">
         <fieldset style="background-color:#EBEEF5; border-color: white;"> 
           <legend style="font:8px; font-weight:800;  margin-left:15px; margin-right:15px; margin-bottom:10px;">其他信息</legend> 
             <el-row  style=" margin-left:15px; margin-right:15px;">
@@ -717,7 +717,7 @@
               </el-col>
             </el-row>
 
-            <el-row  style=" margin-left:15px; margin-right:15px;">
+            <el-row  style=" margin-left:15px; margin-right:15px; margin-bottom:10px;">
               <el-col :span="4">
                 <div class="progress-box" >
                   <el-button type="text" size="small" style="width:170px; margin-right:3px;">主控故障信息</el-button>
@@ -967,7 +967,8 @@ export default {
         if (this.fileName !== this.$store.state.SystemData.OutcsvFilePath) {
           this.fileName = this.$store.state.SystemData.OutcsvFilePath
           const path = require('path')
-          const jsonPath = path.join(__dirname, '..', '..', '..', '..', '..', '..', 'src', 'renderer', 'json', 'zhMap.json');
+          const jsonPath = path.join(__dirname, 'zhMap.json');
+          //const jsonPath = path.join(__dirname, '..', '..', '..', '..', '..', '..', 'src', 'renderer', 'json', 'zhMap.json');
           this.logHandle = new LogUtils(this.fileName, jsonPath, csvHead);
         } else {
           //this.fileName = this.fileName
