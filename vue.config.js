@@ -1,6 +1,8 @@
 const path = require('path')
-const { defineConfig } = require('@vue/cli-service')
+const { defineConfig } = require('@vue/cli-service');
+
 module.exports = defineConfig({
+  publicPath: './',  
   transpileDependencies: true,
   lintOnSave:false,
   configureWebpack: {
@@ -29,6 +31,7 @@ module.exports = defineConfig({
   pluginOptions:{
     electronBuilder:{
       externals: ['serialport', '@serialport/*'],
+      customFileProtocol: './', // 设置自定义文件协议，以解决 Electron 中加载本地文件不显示的问题。
       // preload: 'src/preload.js',
       // mainProcessFile: 'src/background.js',
       chainWebpackMainProcess: config=>{
