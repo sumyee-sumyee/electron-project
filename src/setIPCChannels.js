@@ -12,9 +12,6 @@ import {
   IPC_CHANNEL_START_CONNECT,
   IPC_CHANNEL_STORE_FILE_DIALOG,
   APP_EVENT_CONNECT_NG,
-  APP_REPORT_DIALOG_PROMPT,
-  IPC_CHANNEL_EEPROM_MONITOR,
-
   APP_EVENT_INIT_XLSX,
   APP_EVENT_CLOSE_XLSX,
   APP_EVENT_OPEN_XLSX,
@@ -22,8 +19,6 @@ import {
   APP_EVENT_STOP_XLSX, 
   APP_EVENT_COM_LIST,
 } from './renderer/js/constants/ElectronConstants'
-import {APP_EVENT_STORE_FILE_DIALOG} from './renderer/js/constants/IndoorConstants'
-// import SerialPort from 'serialport'
 const SP = require('serialport')
 const SerialPort = SP.SerialPort
 const crc = require('crc');
@@ -47,10 +42,8 @@ export function UartSendBuffer (buffer, id) {
         SendMsg('APP_EVENT_CONNECT_NG', 3)
         return console.log('Error on UartSendBuffer: ', err.message)
       }
-      // console.log('UartSendBuffer Sent ', id)
     })
   } else {
-    //SendMsg('APP_EVENT_CONNECT_NG', 4)
     console.log('UartSendBuffer Port isOpen Fail or buffer == null')
   }
 }
@@ -94,13 +87,7 @@ function SendMsg (id, data) {
 }
 
 
-let ProgStage = 0
-//let CurrentPackageNumber = 0
-
-let TotalPackages = []
-let PackageLength = 32
-let PackageSum = 0
-
+let ProgStage = 0;
 let SendMsgCtrl = {
   Msg : [],
   IdleMsg : [],
@@ -109,14 +96,6 @@ let SendMsgCtrl = {
   TryCount : 0,
   TimeHandler : null,
 }
-
-
-let BurnEepromCtrl = {
-  EepromData: [],
-  EepromMaxAddr: 0,
-  EepromAddr: 0,
-}
-
 
 
 
@@ -198,59 +177,6 @@ function UartRefreshList () {
     refreshLock = false;
   });
 }
-// function UartRefreshList () {
-//   // console.log('Hit UartRefreshList')
-//   let comList = []
-//   // 新用法
-//   SerialPort.list().then(ports=>{
-//     // console.log(ports, 'ports')
-//     ports.forEach(element => {
-//       comList.push({
-//         value: element.path,
-//         label: element.path
-//       })
-//     })  
-//     console.log(comList, 'comList')
-//     store.dispatch('SetComList', comList)
-//   }).catch(err=>{
-//     console.log('Error ports', ports)
-//   })
-
-//   // 旧用法
-//   // SerialPort.list((err, ports) => {
-//   //   let comList = []
-//   //   if (err) {
-//   //     console.log('Error ports', ports)
-//   //   } else {
-//   //     console.log('ports', ports)
-//   //     ports.forEach(element => {
-//   //       comList.push({
-//   //         value: element.comName,
-//   //         label: element.comName
-//   //       })
-//   //     })  
-//   //     store.dispatch('SetComList', comList)
-//   //   }
-//   // })
-// }
-
-
-
-
-
-function UserSengMsgToAir () {  
-    if (SendMsgCtrl.TryCount < 5) {
-        SendMsgCtrl.TimeHandler = setTimeout(() => {
-            SendMsgCtrl.TimeHandler= null    
-            if (SendMsgCtrl.Msg != null)  {
-              UartSendBuffer(SendMsgCtrl.Msg, 0);
-              //SendMsgCtrl.TryCount++;
-            }
-        }, 45)
-    } else {
-      return
-    }
-} 
 
 
 let webContents
@@ -275,32 +201,6 @@ export default function setIPCChannels (mainWindow) {
         StopConnect()
     })
 
-
-  //保存文件
-//   ipcMain.on(IPC_CHANNEL_STORE_FILE_DIALOG, (event) => {
-//     let TimeData = new Date().toLocaleString().replace(/ /g, '')
-//     TimeData = TimeData.replace(/\//g, '-')
-//     var xlsxTital = TimeData.replace(/\:/g, '-') + '--' + store.state.SystemData.comValue
-//     dialog.showSaveDialog({
-//       defaultPath: './' + xlsxTital +'--Data.csv',
-//       title: '数据另存为',
-//       filters: [
-//         { name: 'CSV', extensions: ['csv'] }
-//       ]
-//     }, files => {
-//       if (files) {
-//         console.log(files)
-//         if (store.state.SystemData.MonitorMode=== 'outdoor') {
-//             console.log("Save File Test");
-//           store.dispatch('SetOutCsvFilePath', files)
-//         } else {
-//           store.dispatch('SetOutCsvFilePath', null)
-//           store.dispatch('SetCsvFilePath', null)
-//         }
-        
-//       }
-//     }) 
-//   })
     ipcMain.on(IPC_CHANNEL_STORE_FILE_DIALOG, (event) => {
         let TimeData = new Date().toLocaleString().replace(/ /g, '')
         TimeData = TimeData.replace(/\//g, '-')
@@ -334,43 +234,27 @@ export default function setIPCChannels (mainWindow) {
       writeXls(Data, sheet, xlsxFile, 0);
   })
 
- 
-
-  //监控EEPROM
-  ipcMain.on(IPC_CHANNEL_EEPROM_MONITOR, (event, arg) => {
-   // console.log("arg.addr >>", arg.addr)
-   // console.log("arg.type >>", arg.type)
-     if (!ComIsConnect()) {
-         SendMsg(APP_REPORT_DIALOG_PROMPT, {ErrorCode:'no serial'})
-         return null
-     } else {
-        SendMsgCtrl.Msg = null
-        //SendMsgCtrl.IdleMsg = OutDataHandler.CreateReadRamCmdPkg(arg.addr, arg.type)
-        console.log('MonitorEEPROMData>>>>', SendMsgCtrl.IdleMsg)
-     }
-  })
-
 
   //关闭EXcel
   ipcMain.on(APP_EVENT_CLOSE_XLSX, (event, arg) => {
       SendMsg(APP_EVENT_STOP_XLSX, arg)
   })
-
- 
   
   // 开始串口连接
-  ipcMain.on(IPC_CHANNEL_START_CONNECT, (event) => {
-    console.log("open ---------",ComPort);
+  ipcMain.on(IPC_CHANNEL_START_CONNECT, (event,port) => {
+    // console.log("open ---------",ComPort);
+    const targetPort = port || store.state.SystemData.comValue;
+    console.log('Start connect requested. current ComPort:', ComPort, ' targetPort:', targetPort);
     if (ComPort !== null) {
       console.log('Hit', ComPort)
       ComPort.close(err => {
         if (err) return console.log('Close Error: ', err.message)
         ComPort = null
-        StartConnect(store.state.SystemData.comValue)
+        StartConnect(targetPort)
       })
     } else {
-      console.log(store.state.SystemData.comValue,'store.state.SystemData.comValue')
-      StartConnect(store.state.SystemData.comValue)
+      console.log(targetPort,'targetPort')
+      StartConnect(targetPort)
     }
   })
 }

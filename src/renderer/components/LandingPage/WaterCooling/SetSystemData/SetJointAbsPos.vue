@@ -133,9 +133,9 @@ import { APP_TOUCH_BUTTON_SEND_MULT_CMD, APP_MAIN_SWITCH_JOINT_UNIT } from '../.
 export default {
    data () {
     return {
-      showJointUnit: '标量值',
+      showJointUnit: '度数(单位:1°)',
       JointPosData: {
-          Data: [32768,32768,32768,32768,32768,32768,32768,32768,32768,32768,32768,32768,32768,32768,32768],
+          Data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         }
     }
   },
@@ -145,18 +145,22 @@ export default {
  
   methods: {
     sendJointPosMsg () {
-        let uint32Data = this.JointPosData.Data.map(v => {
-            const num = Number(v);
-            return num >>> 0;
-        });
+       
+        let int32Data = this.JointPosData.Data.map(v => Number(v));
 
         if (this.showJointUnit === '度数(单位:1°)') {
-            uint32Data = uint32Data.map(val => Math.round((val * 65536) / 360) + 32768);
+            int32Data = int32Data.map(val => {
+              if (val < 0) {
+                return Math.round(32768 - (Math.abs(val) * 65536) / 360);
+              } else {
+                return Math.round((val * 65536) / 360) + 32768;
+              }
+          });
         }
-        console.log('sendJointPosMsg', uint32Data);
+        console.log('sendJointPosMsg', int32Data);
         ipcRenderer.send(APP_TOUCH_BUTTON_SEND_MULT_CMD, {
             CmdType: 'SetJointAbsPosCmd',
-            Data: uint32Data,
+            Data: int32Data,
         });
       
     },

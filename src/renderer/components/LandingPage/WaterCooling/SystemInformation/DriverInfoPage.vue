@@ -29,48 +29,40 @@
         </div>
       </el-col>
 
-      <el-col :span="3">
+      <el-col :span="4">
         <div class="progress-box" >
           <el-button type="text" style="font-weight:600; width:120px; margin-left:10px; margin-right:3px;">主控程序版本:</el-button>
           <el-input size="mini" v-model="HeaderData.MainVersion" readonly/>
         </div>
       </el-col>
 
-      <el-col :span="3">
+      <el-col :span="4">
         <div class="progress-box" >
           <el-button type="text" style="font-weight:600; width:200px; margin-right:3px;">驱动程序版本:</el-button>
           <el-input size="mini" v-model="HeaderData.DriverVersion" readonly/>
         </div>
       </el-col>  
 
-      <el-col :span="3">
+      <el-col :span="4">
         <div class="progress-box" >
           <el-button type="text" style="font-weight:600; width:200px; margin-right:3px;">硬件版本号:</el-button>
           <el-input size="mini"  v-model="HeaderData.HardwareVer" readonly/>
         </div>
       </el-col> 
 
-       <el-col :span="3">
+       <el-col :span="4">
         <div class="progress-box" >
           <el-button type="text" style="font-weight:600; width:200px; margin-right:3px;">左右手:</el-button>
           <el-input size="mini"  v-model="HeaderData.HandType" readonly/>
         </div>
       </el-col> 
 
-      <el-col :span="5">
-        <el-switch 
-          style="margin-left:35px; margin-top:4px; display: block; "
-          v-model="lang"
-          active-color="#13ce66"
-          inactive-color="#409EFF"
-          active-text="语言-中文"
-          inactive-text="Language-English"
-          @change="changelan()">
-        </el-switch>
-      </el-col> 
-
       <el-col :span="1">
-        <div style="margin-top:4px;"> Ver:1.0</div>
+        <div class="progress-box" >
+        </div>
+      </el-col> 
+      <el-col :span="1">
+        <div style="margin-top:4px;"> Ver:1.15</div>
       </el-col>
     </el-row> 
   </div>
@@ -107,6 +99,7 @@ export default {
   },
   data() {
     return {
+      // comport: '',
       HeaderData: {
         MainVersion: '',
         DriverVersion: '',
@@ -126,13 +119,17 @@ export default {
       ipcRenderer.send(IPC_CHANNEL_REFRESH_COM_LIST, 0)
     },
     startConnect () {
-      ipcRenderer.send(IPC_CHANNEL_START_CONNECT, 0)
+      ipcRenderer.send(IPC_CHANNEL_START_CONNECT, this.comport)
       this.currentStatue = true;
     },
     stopConnect () {
       ipcRenderer.send(IPC_CHANNEL_STOP_DOWNLOAD, 0)
       this.currentStatue = false;
     },
+    // onComSelect (value) {
+    //   console.log('onComSelect selected:', value)
+    //   // this.$store.dispatch('SetComPort', value);
+    // },
   },
 
   created: function () {
@@ -168,7 +165,12 @@ export default {
         this.HeaderData.HardwareVer = '0x' + uint16MudbusData[0].toString(16).toUpperCase().padStart(2, '0');
         this.HeaderData.MainVersion = '0x' + uint16MudbusData[1].toString(16).toUpperCase().padStart(2, '0');
       } else if (arg[2] === (0x30 * 2)) {
-        this.HeaderData.DriverVersion = '0x' + uint16MudbusData[0x1061-0x1060].toString(16).toUpperCase().padStart(2, '0');
+        this.HeaderData.DriverVersion = 'V' + uint16MudbusData[0x1061-0x1060].toString(16).toUpperCase().padStart(2, '0') + 
+        ' V' + uint16MudbusData[0x1062-0x1060].toString(16).toUpperCase().padStart(2, '0') + 
+        ' V' + uint16MudbusData[0x1063-0x1060].toString(16).toUpperCase().padStart(2, '0') +
+        ' V' + uint16MudbusData[0x1064-0x1060].toString(16).toUpperCase().padStart(2, '0') + 
+        ' V' + uint16MudbusData[0x1065-0x1060].toString(16).toUpperCase().padStart(2, '0') +
+        ' V' + uint16MudbusData[0x1066-0x1060].toString(16).toUpperCase().padStart(2, '0');
 
         if (uint16MudbusData[0x1060-0x1060] === 0) {
             this.HeaderData.HandType = '右手' 
@@ -214,7 +216,7 @@ export default {
           }
         }
       }
-  }
+  },
 }
 </script scoped>
 <style >

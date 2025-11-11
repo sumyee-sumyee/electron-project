@@ -15,7 +15,7 @@ import {
   } from '../renderer/js/constants/ElectronConstants'
 // import { log } from 'console';
 const crc = require('crc');
-
+let CurrentMode = 0; // 0: position mode, 1: velocity mode
 export class IPCSystemWin{
     constructor (mainWindows) {
         this.windowsHandle = mainWindows.webContents;
@@ -58,8 +58,9 @@ export class IPCSystemWin{
         let RecvDataArray = recvBuff;
         RecvDataArray = RecvDataArray.slice(0, RecvDataArray.length - 2);
         let crc16 = crc.crc16(RecvDataArray, 0xFFFF);
+        //console.log("recv data:", recvBuff.length);
         if (recvBuff[recvBuff.length - 1] == ((crc16 & 0xff00) >> 8) && recvBuff[recvBuff.length - 2] == (crc16 & 0xff)) {
-            //console.log("recv data:", recvBuff.length);
+           // console.log("recv data:", recvBuff.length);
             switch (this.MessageCtrl.op_type) {
                 case 'write_0x03_cmd':
                     this._sendIPCMsg(IndoorIPCMsg.APP_REPORT_TOUCH_READ_DATA, recvBuff);
@@ -72,129 +73,16 @@ export class IPCSystemWin{
                     break;
                 case 'idle':
                     this._sendIPCMsg(IndoorIPCMsg.APP_REPORT_UART_DATA, recvBuff);
+                    if (recvBuff[1] === 0x03 && recvBuff[2] === 0x3E)
+                    {
+                        CurrentMode = recvBuff[64];
+                    }
                     break; 
             }
-            //     case 'read_param':
-            //         if (recvBuff.length <= 50)
-            //         {
-            //             this._sendIPCMsg(IndoorIPCMsg.APP_CMD_GET_SYSTEM_DATA, recvBuff);
-            //         }
-            //         break;
-
-            //     case 'write_0x06_cmd':
-            //         if (recvBuff[1] === 0x06)
-            //         {
-            //             this.MessageCtrl.trySend0x06Cnt = 0;
-            //             this._sendIPCMsg(APP_REPORT_DIALOG_PROMPT, {ErrorCode:'send ok'})
-            //             this.MessageCtrl.op_type = 'idle'
-            //             console.log("send data ok");
-            //         }
-            //         else 
-            //         {
-            //             this.sendMsgQueue.Enqueue(this.MessageCtrl.Message0x06Buffer);
-            //             if (++this.MessageCtrl.trySend0x06Cnt > 3)
-            //             {
-            //                 this.MessageCtrl.trySend0x06Cnt = 0;
-            //                 this._sendIPCMsg(APP_REPORT_DIALOG_PROMPT, {ErrorCode:'send ng'})
-            //                 this.MessageCtrl.op_type = 'idle'
-            //             }
-
-            //             console.log("send data ng");
-                       
-            //         }
-            //         break;
-
-            //     case 'write_0x10_cmd':
-            //         if (++this.MessageCtrl.Recv0x10CmdData >= 2)
-            //         {
-            //             this.MessageCtrl.Recv0x10CmdData = 0;
-                        
-            //             if (recvBuff[1] === 0x10)
-            //             {
-            //                 this.MessageCtrl.trySend0x10Cnt = 0;
-            //                 this._sendIPCMsg(APP_REPORT_DIALOG_PROMPT, {ErrorCode:'send ok'})
-            //                 this.MessageCtrl.op_type = 'idle'
-            //             }
-            //             else 
-            //             {
-            //                 this.sendMsgQueue.Enqueue(this.MessageCtrl.Message0x10Buffer1);
-            //                 this.sendMsgQueue.Enqueue(this.MessageCtrl.Message0x10Buffer2);
-            //                 if (++this.MessageCtrl.trySend0x10Cnt > 3)
-            //                 {
-            //                     this.MessageCtrl.trySend0x10Cnt = 0;
-            //                     this._sendIPCMsg(APP_REPORT_DIALOG_PROMPT, {ErrorCode:'send ng'})
-            //                     this.MessageCtrl.op_type = 'idle'
-            //                 }
-            //             }
-            //         }
-            //         break;
-                
-            //     // case 'idle':
-            //     //     if (recvBuff.length <= 50)
-            //     //     {
-                       
-            //     //         switch (this.MessageCtrl.SetTimeoutNum)
-            //     //         {
-            //     //             case 0:
-            //     //                 // console.log("0>>", recvBuff);
-            //     //                 break;
-            //     //             case 1:
-
-            //     //                 this.MessageCtrl.Watchdata[0] = recvBuff[3];
-            //     //                 this.MessageCtrl.Watchdata[1] = recvBuff[4];
-                               
-            //     //                 break;
-            //     //             case 2:
-            //     //                 this.MessageCtrl.Watchdata[2] = recvBuff[3];
-            //     //                 this.MessageCtrl.Watchdata[3] = recvBuff[4];
-                              
-            //     //                 break;
-            //     //             case 3:
-            //     //                 this.MessageCtrl.Watchdata[4] = recvBuff[3];
-            //     //                 this.MessageCtrl.Watchdata[5] = recvBuff[4];
-            //     //                 this._sendIPCMsg(IndoorIPCMsg.APP_WATCH_DATA_REFRESH, this.MessageCtrl.Watchdata);
-            //     //                 // console.log("Watchdata>>", this.MessageCtrl.Watchdata);
-            //     //                 break;
-            //     //             default:
-            //     //                 break;
-            //     //         }
-
-                       
-            //     //     }
-            //     //     else 
-            //     //     {
-            //     //         this._sendIPCMsg(IndoorIPCMsg.APP_REPORT_UART_DATA, recvBuff);
-            //     //         //console.log("big data ------------------");
-            //     //     }
-            //     //     break;
-
-            //     default:
-            //         break;
-            // }
         }
         else 
         {
-            // if (this.MessageCtrl.op_type === 'write_0x06_cmd') 
-            // {
-            //     this.sendMsgQueue.Enqueue(this.MessageCtrl.Message0x06Buffer);
-            //     if (++this.MessageCtrl.trySend0x06Cnt > 3)
-            //     {
-            //         this.MessageCtrl.trySend0x06Cnt = 0;
-            //         this.MessageCtrl.op_type === 'idle'
-            //         this._sendIPCMsg(APP_REPORT_DIALOG_PROMPT, {ErrorCode:'send ng'})
-            //     }
-            // }
-            // else if (this.MessageCtrl.op_type === 'write_0x10_cmd')
-            // {
-            //     this.sendMsgQueue.Enqueue(this.MessageCtrl.Message0x10Buffer1);
-            //     this.sendMsgQueue.Enqueue(this.MessageCtrl.Message0x10Buffer2);
-            //     if (++this.MessageCtrl.trySend0x10Cnt > 3)
-            //     {
-            //         this.MessageCtrl.trySend0x10Cnt = 0;
-            //         this._sendIPCMsg(APP_REPORT_DIALOG_PROMPT, {ErrorCode:'send ng'})
-            //         this.MessageCtrl.op_type = 'idle'
-            //     }
-            // }    
+            
         }
     }
 
@@ -249,7 +137,7 @@ export class IPCSystemWin{
                 tmpBuffer[1] = 0x06;
                 tmpBuffer[2] = 0x00;
                 tmpBuffer[3] = 0xAB;
-                if (global.Mode === 0) {
+                if (CurrentMode === 0) {
                     global.Mode = 1;
                 } else {
                     global.Mode = 0;
@@ -347,7 +235,7 @@ export class IPCSystemWin{
                 cmdUartSendBuffer = tmpBuffer.concat((crc16Data & 0xff)).concat(((crc16Data & 0xff00) >> 8));
                 this.sendMsgQueue.Enqueue(cmdUartSendBuffer);
                 this.MessageCtrl.op_type = 'write_0x10_cmd';  
-                //console.log('cmdUartSendBuffer', Buffer.from(cmdUartSendBuffer).toString('hex').match(/.{1,2}/g).join(' '));
+                // console.log('cmdUartSendBuffer', Buffer.from(cmdUartSendBuffer).toString('hex').match(/.{1,2}/g).join(' '));
             } else if (args.CmdType === 'ResetZeroPointCmd') {
                 tmpBuffer[0] = 0x01;
                 tmpBuffer[1] = 0x10;
@@ -364,7 +252,7 @@ export class IPCSystemWin{
                 cmdUartSendBuffer = tmpBuffer.concat((crc16Data & 0xff)).concat(((crc16Data & 0xff00) >> 8));
                 this.sendMsgQueue.Enqueue(cmdUartSendBuffer);
                 this.MessageCtrl.op_type = 'write_0x10_cmd';  
-                //console.log('cmdUartSendBuffer', Buffer.from(cmdUartSendBuffer).toString('hex').match(/.{1,2}/g).join(' '));
+                // console.log('cmdUartSendBuffer', Buffer.from(cmdUartSendBuffer).toString('hex').match(/.{1,2}/g).join(' '));
             } else if (args.CmdType === 'ZeroPointCheckCmd') {
                 tmpBuffer[0] = 0x01;
                 tmpBuffer[1] = 0x10;
@@ -545,24 +433,6 @@ export class IPCSystemWin{
             );
         })
 
-        //烧写EEPROM
-        ipcMain.on(IndoorIPCMsg.APP_REPORT_MEM_INDOOR_BURN, (evnet, args) => {
-            // 判断串口是否连接
-            if(!ComIsConnect()) {
-                this._sendIPCMsg(IndoorIPCMsg.APP_REPORT_INDOOR_DIALOG_PROMPT, "Serial Port not Connected!");
-                return;
-            }
-            /* 重置烧写状态 */
-            this.memoryCtrl._init(10);
-
-            //console.log('start programming...')
-            this.memoryCtrl.isBusy = true;
-            this._MemBurnFrame(this.memoryCtrl.eepromAddr, this.memoryCtrl.data);
-            this.memoryCtrl.timOutHandle = setTimeout(() => {
-                this._timeOutCallBack();
-            }, 1000)
-        });
-
         /***************************** 前端命令监听 end *******************************/
     }
 
@@ -607,7 +477,7 @@ export class IPCSystemWin{
                       
                     }
                 }
-            }, 200);
+            }, 100);
         }
     }
 

@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      CurrentWarning:[{name:'无故障'}],
+      CurrentWarning:[{name:''}],
       infoText:'',
       infoTextContent:'',
       Error01: 0, 
